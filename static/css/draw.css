@@ -1,0 +1,132 @@
+body {
+  margin: 0;
+  font-family: 'Orbitron', sans-serif;
+  background: black;
+  color: cyan;
+  overflow-x: hidden;
+}
+
+#particles-js {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  z-index: -1;
+}
+
+.main-container {
+  padding: 20px;
+  text-align: center;
+}
+
+.glow-title {
+  font-size: 32px;
+  text-shadow: 0 0 10px cyan, 0 0 20px cyan;
+  margin-bottom: 20px;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.left-panel {
+  width: 350px;
+  height: 480px;
+  overflow-y: auto;
+  border: 3px solid #00f0ff;
+  border-radius: 10px;
+  box-shadow: 0 0 15px cyan;
+  padding: 10px;
+  flex-shrink: 0;
+  background-color: rgba(0, 0, 20, 0.4); /* optional glassy background */
+}
+
+
+
+.toggle-buttons {
+  margin-bottom: 15px;
+}
+
+.toggle-buttons button {
+  padding: 6px 12px;
+  margin: 3px;
+  background: #00f0ff;
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.part-category {
+  display: none;
+}
+
+.part-category.active {
+  display: block;
+}
+
+.part-row {
+  display:inline-table;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.part-row img {
+  width: 80px;
+  height: 80px;
+  margin: 4px;
+  border: 2px solid #00f0ff;
+  border-radius: 8px;
+  cursor: pointer;
+  object-fit: contain;
+  background-color: rgba(0, 0, 0, 0.3); /* Optional for consistent padding */
+}
+
+
+
+
+.right-panel {
+  padding-left: 100px;
+  text-align: center;
+}
+
+canvas {
+  width: 400px;  /* or leave as-is if 400 is fine */
+  height: 520px;
+  border: 3px solid #00f0ff;
+  box-shadow: 0 0 15px cyan;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+
+button {
+  background-color: #00f0ff;
+  border: none;
+  color: #000;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  margin: 10px 5px;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background-color: #00c2ff;
+  box-shadow: 0 0 10px cyan;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 15px;
+  text-decoration: none;
+  color: #7befff;
+}
+.back-link:hover {
+  text-shadow: 0 0 8px cyan;
+}

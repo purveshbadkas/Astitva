@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Live Detection</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/live_detection.css') }}"
+    />
+  </head>
+  <body>
+    <div class="live-scan-container">
+      <h2>📷 Live Detection</h2>
+      <p>Allow camera access and click "Scan" to match face with database</p>
+
+      <div class="video-wrapper">
+        <video id="video" autoplay muted playsinline></video>
+        <canvas id="canvas" style="display: none"></canvas>
+        <div class="scanner-overlay" id="scannerOverlay" style="display: none">
+          <div class="scan-line"></div>
+        </div>
+      </div>
+
+      <form id="captureForm" method="POST" action="/process_live_match">
+        <input type="hidden" name="image_data" id="image_data" />
+        <button type="button" onclick="captureImage()">▶ Scan</button>
+        <button type="submit" id="submitBtn">📤 Submit</button>
+      </form>
+
+      <p><a href="/dashboard">← Back to Dashboard</a></p>
+    </div>
+
+    <script>
+      const video = document.getElementById("video");
+      const canvas = document.getElementById("canvas");
+      const imageDataInput = document.getElementById("image_data");
+      const overlay = document.getElementById("scannerOverlay");
+      const submitBtn = document.getElementById("submitBtn");
+
+      // Start camera
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then((stream) => {
+          video.srcObject = stream;
+        })
+        .catch((err) => {
+          alert("Camera access denied or not available.");
+        });
+
+      // Capture frame with scanner effect
+      function captureImage() {
+        overlay.style.display = "block";
+        submitBtn.style.display = "none";
+
+        setTimeout(() => {
+          overlay.style.display = "none";
+          const context = canvas.getContext("2d");
+
+          // Resize canvas to reduce image size
+          canvas.width = 320;
+          canvas.height = 240;
+
+          context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+          // Compress using JPEG instead of PNG
+          const imageData = canvas.toDataURL("image/jpeg", 0.6);
+          imageDataInput.value = imageData;
+
+          submitBtn.style.display = "inline-block";
+        }, 2000); // simulate scan duration
+      }
+    </script>
+  </body>
+</html>

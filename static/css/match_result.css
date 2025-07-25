@@ -1,0 +1,95 @@
+body {
+  margin: 0;
+  font-family: 'Orbitron', sans-serif;
+  background: black;
+  color: cyan;
+  overflow-x: hidden;
+  padding: 10px;
+  text-align: center;
+}
+
+#particles-js {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.result-container h2 {
+  color: #00ffcc;
+  text-shadow: 0 0 5px cyan, 0 0 10px cyan;
+  margin: 10px 0;
+  font-size: 20px;
+}
+
+.images {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 25px 0;
+  flex-wrap: wrap;
+}
+
+.image-box {
+  background-color: rgba(0, 20, 40, 0.6);
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 0 8px #00f0ff;
+}
+
+.image-box img {
+  width: 250px;
+  height: auto;
+  border-radius: 8px;
+  border: 2px solid cyan;
+}
+
+.details-card {
+  max-width: 500px;
+  margin: 15px auto;
+  background-color: rgba(0, 0, 30, 0.7);
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 0 12px #00f0ff;
+}
+
+.details-card p {
+  margin: 6px 0;
+  font-size: 14px;
+  color: #00eaff;
+}
+
+.confidence-score {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #4aff50;
+  font-size: 16px;
+}
+
+.not-found {
+  color: red;
+  font-size: 18px;
+  margin-top: 40px;
+  text-shadow: 0 0 4px red, 0 0 8px red;
+}
+
+.back-link {
+  margin-top: 20px;
+}
+
+.back-link a {
+  color: cyan;
+  text-decoration: none;
+  font-size: 16px;
+  border: 1px solid cyan;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.back-link a:hover {
+  background-color: cyan;
+  color: black;
+}

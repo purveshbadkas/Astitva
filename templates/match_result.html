@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Match Result - ASTITVA</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/match_result.css') }}" />
+</head>
+<body>
+  <div id="particles-js"></div>
+
+  {% if matched %}
+  <div class="result-container">
+    <h2>✅ Match Found</h2>
+    <div class="images">
+      <div class="image-box">
+        <h4>Uploaded Sketch</h4>
+        <img src="{{ sketch_img }}" alt="Uploaded Sketch" />
+      </div>
+      <div class="image-box">
+        <h4>Matched Criminal</h4>
+        <img src="{{ criminal_img }}" alt="Matched Criminal" />
+      </div>
+    </div>
+
+    <div class="details-card">
+      <p><strong>Name:</strong> {{ criminal.name }}</p>
+      <p><strong>Crime Type:</strong> {{ criminal.crime_type }}</p>
+      <p><strong>Location:</strong> {{ criminal.location }}</p>
+      <p><strong>Arrest Date:</strong> {{ criminal.arrest_date }}</p>
+      <p><strong>Status:</strong> {{ criminal.status }}</p>
+      <div class="confidence-score">🔍 Confidence: {{ confidence }}%</div>
+    </div>
+  </div>
+  {% else %}
+  <div class="not-found">
+    <h2>❌ No Match Found</h2>
+    <p>The uploaded sketch does not match any record in the criminal database.</p>
+  </div>
+  {% endif %}
+
+  <div class="back-link">
+    <a href="/dashboard">⬅ Back to Dashboard</a>
+  </div>
+
+  <!-- Particle.js -->
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

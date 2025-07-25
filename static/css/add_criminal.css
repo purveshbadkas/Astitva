@@ -1,0 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron&family=UnifrakturCook:wght@700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: 'Orbitron', sans-serif;
+  background-color: #000 !important;
+  color: #00f0ff;
+  position: relative;
+}
+
+#particles-js {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+}
+
+/* Container */
+.add-criminal-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 20, 40, 0.8);
+  padding: 40px;
+  width: 500px;
+  border-radius: 14px;
+  box-shadow: 0 0 25px #00f0ff;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+.add-criminal-container h2 {
+  font-family: 'UnifrakturCook', cursive;
+  font-size: 36px;
+  margin-bottom: 20px;
+  text-shadow: 0 0 12px #00f0ff;
+}
+
+.add-criminal-container input {
+  width: 100%;
+  padding: 14px;
+  margin: 10px 0;
+  border: 1px solid #00f0ff;
+  background-color: transparent;
+  color: #00f0ff;
+  border-radius: 10px;
+  outline: none;
+  font-size: 16px;
+}
+
+.add-criminal-container input::file-selector-button {
+  background: #00f0ff;
+  color: black;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-right: 12px;
+}
+
+.add-criminal-container button {
+  width: 100%;
+  padding: 14px;
+  background-color: #00f0ff;
+  border: none;
+  border-radius: 10px;
+  color: #000;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: 0.3s ease;
+}
+
+.add-criminal-container button:hover {
+  background-color: #00d0d0;
+  box-shadow: 0 0 20px #00f0ff;
+}
+
+.add-criminal-container p {
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.add-criminal-container a {
+  color: #7befff;
+  text-decoration: underline;
+}

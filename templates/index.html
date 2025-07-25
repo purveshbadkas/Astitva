@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Astitva - AI Forensic Tool</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}" />
+  <link href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Marathi&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <div id="particles-js"></div>
+
+  <div class="scanner-bg">
+    <div class="ring"></div>
+    <div class="ring ring2"></div>
+    <div class="ring ring3"></div>
+  </div>
+
+  <div class="holo-container">
+    <div class="glow-border">
+      <h1 class="title">Astitva</h1>
+      <p class="subtitle">Reconstructing Identity Through AI-Powered Forensic Tool</p>
+      <a href="{{ url_for('login_page') }}" class="btn">Access System</a>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script>
+    particlesJS("particles-js", {
+      particles: {
+        number: { value: 60 },
+        color: { value: "#00f0ff" },
+        shape: { type: "circle" },
+        opacity: { value: 0.4 },
+        size: { value: 3 },
+        line_linked: {
+          enable: true,
+          distance: 120,
+          color: "#00f0ff",
+          opacity: 0.4,
+          width: 1,
+        },
+        move: { enable: true, speed: 1.5 },
+      },
+      interactivity: {
+        events: { onhover: { enable: true, mode: "repulse" } },
+      },
+      retina_detect: true,
+    });
+  </script>
+</body>
+</html>

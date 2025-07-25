@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ASTITVA Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}" />
+</head>
+<body>
+  <div id="particles-js"></div>
+
+  <header class="header">
+    <div class="logo">ASTITVA</div>
+    <div class="header-center">Welcome {{ user }}</div>
+    <!-- <nav class="nav-links">
+      <a href="#">Home</a>
+      <a href="#">About Us</a>
+      <a href="#">Contact Us</a>
+    </nav> -->
+  </header>
+
+    <section class="circle-section">
+      <div class="circle-container">
+        <div class="rotating-circle"></div>
+        <div class="circle-text">ASTITVA</div>
+      </div>
+    </section>
+
+
+
+  <section class="cards-container">
+    <!-- Upload Sketch -->
+    <div class="card" onclick="document.getElementById('sketchInput').click();">
+      <div class="card-inner">
+        <div class="card-front">Upload Sketch</div>
+        <div class="card-back">Upload Sketch</div>
+      </div>
+    </div>
+    <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data" style="display: none">
+      <input type="file" name="sketch" id="sketchInput" accept="image/*" onchange="document.getElementById('uploadForm').submit();" />
+    </form>
+
+    <!-- Live Detection -->
+    <div class="card" onclick="window.location.href='/start_live_detection';">
+      <div class="card-inner">
+        <div class="card-front">Live Detection</div>
+        <div class="card-back">Start Webcam</div>
+      </div>
+    </div>
+
+    <!-- Create Sketch -->
+    <div class="card" onclick="window.location.href='/draw';">
+      <div class="card-inner">
+        <div class="card-front">Draw Sketch</div>
+        <div class="card-back">Create Digitally</div>
+      </div>
+    </div>
+
+    <!-- Add Criminal -->
+    <div class="card" onclick="window.location.href='/add_criminal';">
+      <div class="card-inner">
+        <div class="card-front">Add Criminal</div>
+        <div class="card-back">Enter Records</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="about-us">
+    <h2>About Us</h2>
+    <p>
+      ASTITVA is an AI-powered criminal identification system designed to assist forensic teams in rapid and accurate suspect matching using advanced face recognition, live scanning, and sketch-based identification.
+    </p>
+  </section>
+
+  <section class="team-section">
+    <h2>Our Team</h2>
+    <div class="team">
+      <div class="team-member"><p>Member 1</p></div>
+      <div class="team-member"><p>Member 2</p></div>
+      <div class="team-member"><p>Member 3</p></div>
+    </div>
+  </section>
+
+  <footer>
+    <a href="#"><img src="{{ url_for('static', filename='images/twitter.png') }}" alt="Twitter" class="social-icon" /></a>
+    <a href="#"><img src="{{ url_for('static', filename='images/github.png') }}" alt="GitHub" class="social-icon" /></a>
+    <a href="#"><img src="{{ url_for('static', filename='images/linkedin.png') }}" alt="LinkedIn" class="social-icon" /></a>
+  </footer>
+
+  <!-- Particles & JS -->
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

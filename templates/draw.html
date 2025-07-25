@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Draw Sketch | Astitva</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/draw.css') }}">
+</head>
+<body>
+  <div id="particles-js"></div>
+
+  <div class="main-container">
+    <h2 class="glow-title">🎨 Create Digital Sketch</h2>
+
+    <div class="container">
+      <!-- Left Panel: Face Parts -->
+      <div class="left-panel">
+        <div class="toggle-buttons">
+          <button onclick="showCategory('head')">Head</button>
+          <button onclick="showCategory('eyes')">Eyes</button>
+          <button onclick="showCategory('eyebrows')">Eyebrows</button>
+          <button onclick="showCategory('nose')">Nose</button>
+          <button onclick="showCategory('lips')">Lips</button>
+          <button onclick="showCategory('hair')">Hair</button>
+          <button onclick="showCategory('mustach')">Mustache</button>
+        </div>
+
+        {% for part in ['head', 'eyes', 'eyebrows', 'nose', 'lips', 'hair', 'mustach'] %}
+        <div id="{{ part }}" class="part-category">
+          <div class="part-row">
+            {% for i in range(1, 13) %}
+              <img src="{{ url_for('static', filename='uploads/Face Sketch Elements/' ~ part ~ '/' ~ '%02d.png'|format(i)) }}" onclick="addPart(this.src)">
+            {% endfor %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Right Panel: Canvas -->
+      <div class="right-panel">
+        <canvas id="canvas" width="400" height="500"></canvas>
+
+        <!-- Save Sketch Form -->
+        <form method="POST" action="/save_sketch">
+          <input type="hidden" name="image_data" id="image_data">
+          <button type="submit" onclick="saveCanvas()">💾 Save Sketch</button>
+        </form>
+
+        <!-- Match Sketch Form -->
+        <form method="POST" action="/match_sketch_from_canvas">
+          <input type="hidden" name="image_data" id="match_image_data">
+          <button type="submit" onclick="matchCanvas()">🔍 Search for Match</button>
+        </form>
+
+        <a href="/dashboard" class="back-link">⬅ Back to Dashboard</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Particles.js -->
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script src="{{ url_for('static', filename='js/particles-config.js') }}"></script>
+
+  <!-- Canvas Logic -->
+  <script>
+    const canvas = new fabric.Canvas('canvas');
+
+    function addPart(src) {
+      fabric.Image.fromURL(src, function(img) {
+        img.scaleToWidth(100);
+        canvas.add(img);
+      });
+    }
+
+    function saveCanvas() {
+      const dataURL = canvas.toDataURL('image/png');
+      document.getElementById('image_data').value = dataURL;
+    }
+
+    function matchCanvas() {
+      const dataURL = canvas.toDataURL('image/png');
+      document.getElementById('match_image_data').value = dataURL;
+    }
+
+    function showCategory(categoryId) {
+      document.querySelectorAll('.part-category').forEach(el => el.classList.remove('active'));
+      document.getElementById(categoryId).classList.add('active');
+    }
+
+    showCategory('head'); // default view
+  </script>
+</body>
+</html>

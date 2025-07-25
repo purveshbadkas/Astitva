@@ -1,0 +1,241 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron&family=UnifrakturCook:wght@700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: 'Orbitron', sans-serif;
+  background-color: #000 !important;
+  color: #00f0ff;
+  position: relative;
+}
+
+/* Particle background */
+#particles-js {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+}
+
+/* Login container */
+.login-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 20, 40, 0.65);
+  padding: 70px 60px;
+  width: 500px;
+  border-radius: 18px;
+  box-shadow: 0 0 30px #00f0ff;
+  text-align: center;
+  backdrop-filter: blur(12px);
+}
+
+/* Title */
+.login-container h2 {
+  font-family: 'UnifrakturCook', cursive;
+  font-size: 48px;
+  margin-bottom: 30px;
+  color: #00f0ff;
+  text-shadow: 0 0 15px #00f0ff;
+}
+
+/* Inputs */
+.login-container input {
+  width: 100%;
+  padding: 16px;
+  margin: 16px 0;
+  border: 1px solid #00f0ff;
+  background-color: transparent;
+  color: #00f0ff;
+  border-radius: 10px;
+  outline: none;
+  font-size: 18px;
+}
+
+.login-container input::placeholder {
+  color: #7befff;
+  opacity: 0.8;
+  font-size: 16px;
+}
+
+/* Button */
+.login-container button {
+  width: 100%;
+  padding: 16px;
+  background-color: #00f0ff;
+  border: none;
+  border-radius: 10px;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 18px;
+  margin-top: 15px;
+  transition: all 0.3s ease;
+}
+
+.login-container button:hover {
+  background-color: #00d0d0;
+  box-shadow: 0 0 25px #00f0ff;
+}
+
+/* Link */
+.login-container a {
+  color: #7befff;
+  text-decoration: underline;
+  display: block;
+  margin-top: 20px;
+  font-size: 16px;
+}
+.login-container p a:hover {
+  color: #00f0ff;
+  text-shadow: 0 0 10px #00f0ff;
+}
+.login-container p {
+  margin-top: 30px;
+  font-size: 16px;
+  color: #7befff;
+}
+
+/* Register container: slightly larger version */
+.register-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 20, 40, 0.8);
+  padding: 40px;
+  width: 500px; /* Wider */
+  border-radius: 14px;
+  box-shadow: 0 0 22px #00f0ff;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+.register-container h2 {
+  font-size: 32px;
+  margin-bottom: 20px;
+  text-shadow: 0 0 12px #00f0ff;
+}
+
+.register-container input {
+  width: 100%;
+  padding: 14px;
+  margin: 10px 0;
+  border: 1px solid #00f0ff;
+  background-color: transparent;
+  color: #00f0ff;
+  border-radius: 10px;
+  outline: none;
+  font-size: 16px;
+}
+
+.register-container button {
+  width: 100%;
+  padding: 14px;
+  background-color: #00f0ff;
+  border: none;
+  border-radius: 10px;
+  color: #000;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: 0.3s ease;
+}
+
+.register-container p {
+  margin-top: 22px;
+  font-size: 14px;
+}
+
+.register-container a {
+  color: #7befff;
+  text-decoration: underline;
+}
+
+/* Row for first name + last name */
+.name-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.name-row input {
+  flex: 1;
+  padding: 14px;
+  border: 1px solid #00f0ff;
+  background-color: transparent;
+  color: #00f0ff;
+  border-radius: 10px;
+  outline: none;
+  font-size: 16px;
+}
+
+.register-container a {
+  display: inline-block;
+  margin-top: 8px; /* Add space below the paragraph */
+  color: #7befff;
+  text-decoration: underline;
+  font-size: 14px;
+}
+.login-redirect {
+  margin-top: 18px;
+  font-size: 14px;
+}
+
+.login-redirect a {
+  display: inline-block;
+  margin-top: 6px;
+  color: #7befff;
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .login-container,
+  .register-container {
+    width: 90%;
+    padding: 40px 20px;
+  }
+
+  .login-container h2,
+  .register-container h2 {
+    font-size: 32px;
+  }
+
+  .login-container input,
+  .register-container input {
+    padding: 12px;
+    font-size: 15px;
+  }
+
+  .login-container button,
+  .register-container button {
+    padding: 12px;
+    font-size: 15px;
+  }
+
+  .name-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .register-container p,
+  .login-container p,
+  .login-redirect {
+    font-size: 14px;
+  }
+}
+
