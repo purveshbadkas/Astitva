@@ -1,19 +1,40 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from werkzeug.utils import secure_filename
 import sqlite3
-import os
 import base64
-import face_recognition
 import pandas as pd
+import csv
+import google.generativeai as genai
+from google.generativeai.types import ContentType
+from google import genai
+from flask import Flask, request, jsonify
+import os
+
+# Import your separate matching logic
+from face_matcher import find_best_match
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB
 app.secret_key = 'your_secret_key'
 
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+if not GOOGLE_API_KEY:
+    raise ValueError("GOOGLE_API_KEY not set in environment")
+genai.api_key = GOOGLE_API_KEY
+
+api_key = os.getenv("GOOGLE_API_KEY")  # or "GOOGLE_API_KEY" if using Gemini
+if not api_key:
+    print("[ERROR] API key not found!")
+
+
 UPLOAD_FOLDER = os.path.join('static', 'uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+
+# ----------------------------
+# Database Setup
+# ----------------------------
 def init_db():
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
@@ -29,6 +50,34 @@ def init_db():
     ''')
     conn.commit()
     conn.close()
+
+
+# ----------------------------
+# Criminal Info Lookup
+# ----------------------------
+def fetch_criminal_info(name):
+    if not os.path.exists("criminals.csv"):
+        return None
+
+    df = pd.read_csv("criminals.csv")
+
+    # Case-insensitive partial match
+    result = df[df["name"].str.contains(name, case=False, na=False)]
+
+    if not result.empty:
+        row = result.iloc[0]
+        return {
+            "name": row.get("name", "N/A"),
+            "crimes": row.get("crime_type", "N/A"),
+            "address": row.get("location", "N/A"),
+            "status": row.get("status", "N/A")
+        }
+    return None
+
+
+# ----------------------------
+# Routes
+# ----------------------------
 
 @app.route('/')
 def index():
@@ -118,48 +167,19 @@ def match_sketch(filename):
         return redirect('/')
 
     sketch_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    try:
-        sketch_img = face_recognition.load_image_file(sketch_path)
-        sketch_encodings = face_recognition.face_encodings(sketch_img)
-        if not sketch_encodings:
-            return render_template("match_result.html", matched=False)
-        sketch_encoding = sketch_encodings[0]
-    except Exception as e:
-        return f"Error reading sketch: {e}"
+    
+    # Unpack the tuple returned by find_best_match
+    best_image, best_data, confidence = find_best_match(sketch_path)
 
-    def face_distance_to_confidence(face_distance, threshold=0.6):
-        if face_distance > threshold:
-            range_val = (1.0 - threshold)
-            linear_val = (1.0 - face_distance) / (range_val * 2.0)
-            return linear_val
-        else:
-            range_val = threshold
-            linear_val = 1.0 - (face_distance / (range_val * 2.0))
-            return linear_val + ((1.0 - linear_val) * ((linear_val - 0.5) ** 0.2))
-
-    df = pd.read_csv('criminals.csv')
-    for _, row in df.iterrows():
-        criminal_img_path = os.path.join('static', 'criminals', row['image'])
-        try:
-            criminal_img = face_recognition.load_image_file(criminal_img_path)
-            criminal_encodings = face_recognition.face_encodings(criminal_img)
-            if not criminal_encodings:
-                continue
-            criminal_encoding = criminal_encodings[0]
-            face_distance = face_recognition.face_distance([criminal_encoding], sketch_encoding)[0]
-            match = face_recognition.compare_faces([criminal_encoding], sketch_encoding)[0]
-            if match:
-                confidence = face_distance_to_confidence(face_distance) * 100
-                return render_template("match_result.html",
-                                       matched=True,
-                                       sketch_img=f"/static/uploads/{filename}",
-                                       criminal_img=f"/static/criminals/{row['image']}",
-                                       criminal=row.to_dict(),
-                                       confidence=round(confidence, 2))
-        except:
-            continue
-
-    return render_template("match_result.html", matched=False)
+    if best_image and best_data:
+        return render_template("match_result.html",
+                               matched=True,
+                               sketch_img=f"/static/uploads/{filename}",
+                               criminal_img=f"/static/criminals/{best_image}",
+                               criminal=best_data,
+                               confidence=confidence)
+    else:
+        return render_template("match_result.html", matched=False)
 
 @app.route('/start_live_detection')
 def start_live_detection():
@@ -173,9 +193,6 @@ def process_live_match():
         return redirect('/')
 
     data_url = request.form['image_data']
-
-    print(f"📦 Received base64 image size: {len(data_url) / 1024:.2f} KB")
-
     if not data_url.startswith('data:image'):
         return "Invalid image data"
 
@@ -191,7 +208,6 @@ def process_live_match():
 @app.errorhandler(413)
 def request_entity_too_large(error):
     return "Uploaded image is too large. Try reducing resolution.", 413
-
 
 @app.route('/add_criminal', methods=['GET', 'POST'])
 def add_criminal():
@@ -225,6 +241,79 @@ def add_criminal():
 
     return render_template('add_criminal.html')
 
+# ----------------------------
+# Utility Functions
+# ----------------------------
+
+def get_criminal_info(name):
+    """Look up criminal info from CSV and return as dict."""
+    if not name:
+        return None
+
+    try:
+        with open("criminals.csv", "r") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                if row["name"].strip().lower() == name.strip().lower():
+                    return row
+        return None
+    except Exception as e:
+        print(f"[ERROR] CSV lookup failed: {e}")
+        return None
+
+def format_criminal_info(info):
+    """Format criminal info dictionary into readable string."""
+    if not info:
+        return "No information available."
+    return "\n".join([f"{key.capitalize()}: {value}" for key, value in info.items()])
+
+
+# ----------------------------
+# Chatbot Routes
+# ----------------------------
+
+@app.route("/write_fir", methods=["POST"])
+def write_fir():
+    details = request.json.get("details")
+    if not details:
+        return jsonify({"reply": "No details provided for FIR."})
+
+    prompt = f"""
+    You are a police AI assistant. 
+    Write a professional FIR report based on the following incident details:
+
+    {details}
+
+    Include these headings:
+    - FIR Number
+    - Date
+    - Complainant
+    - Incident Description
+    - Location
+    - Suspect Info (if any)
+    - Action Taken
+    """
+
+    try:
+        client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt
+        )
+
+        fir_text = response.text
+        return jsonify({"reply": fir_text})
+
+    except Exception as e:
+        print(f"[ERROR] Gemini FIR generation failed: {e}")
+        return jsonify({"reply": "Error generating FIR. Please check your API key and network."})
+
+
+
+
+# ----------------------------
+# Run App
+# ----------------------------
 if __name__ == '__main__':
     init_db()
-    app.run(host='0.0.0.0',port=5001,debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=True)

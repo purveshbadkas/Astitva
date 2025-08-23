@@ -11,21 +11,14 @@
   <header class="header">
     <div class="logo">ASTITVA</div>
     <div class="header-center">Welcome {{ user }}</div>
-    <!-- <nav class="nav-links">
-      <a href="#">Home</a>
-      <a href="#">About Us</a>
-      <a href="#">Contact Us</a>
-    </nav> -->
   </header>
 
-    <section class="circle-section">
-      <div class="circle-container">
-        <div class="rotating-circle"></div>
-        <div class="circle-text">ASTITVA</div>
-      </div>
-    </section>
-
-
+  <section class="circle-section">
+    <div class="circle-container">
+      <div class="rotating-circle"></div>
+      <div class="circle-text">ASTITVA</div>
+    </div>
+  </section>
 
   <section class="cards-container">
     <!-- Upload Sketch -->
@@ -87,7 +80,54 @@
   </footer>
 
   <!-- Particles & JS -->
-  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
-</body>
+  <!-- <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script> -->
+
+  <!-- Chatbot Toggle Button -->
+  <button id="chatbot-toggle" aria-label="Open Chatbot" class="chatbot-toggle">
+    <span class="chatbot-icon">💬</span>
+    <span class="chatbot-text">Assistant</span>
+  </button>
+
+  <!-- Chatbot Modal -->
+  <div id="chatbot-modal" class="chatbot-modal hidden" role="dialog" aria-modal="true" aria-labelledby="chatbot-title">
+    <div class="chatbot-content">
+      <header class="chatbot-header">
+        <h2 id="chatbot-title">ASTITVA Assistant</h2>
+        <button id="chatbot-close" aria-label="Close Chatbot" class="chatbot-close">&times;</button>
+      </header>
+      <div class="chatbot-body">
+        <p class="chatbot-description">How can I assist you today?</p>
+        <!-- Search Criminal Section -->
+        <div class="chatbot-section">
+          <h3>Search Criminal Database</h3>
+          <div class="input-group">
+            <input type="text" id="criminal-name" placeholder="Enter criminal name..." class="chatbot-input">
+            <button id="search-criminal-btn" class="chatbot-btn primary">Search</button>
+          </div>
+          <div id="search-result" class="result-area hidden"></div>
+        </div>
+        <!-- File FIR Section -->
+        <div class="chatbot-section">
+          <h3>File FIR</h3>
+          <div class="input-group">
+            <textarea id="fir-details" placeholder="Enter incident details..." class="chatbot-textarea" rows="3"></textarea>
+            <button id="file-fir-btn" class="chatbot-btn secondary">Generate FIR</button>
+          </div>
+          <div id="fir-result" class="result-area hidden"></div>
+        </div>
+      </div>
+      <div id="loading-indicator" class="loading-indicator hidden">
+        <div class="spinner"></div>
+        <span>Processing...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay for modal backdrop -->
+  <div id="chatbot-overlay" class="chatbot-overlay hidden"></div>
+
+  <!-- Dashboard JS (particles, GSAP, chatbot included) -->
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script></body>
 </html>
