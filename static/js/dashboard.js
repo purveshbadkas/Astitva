@@ -1,10 +1,12 @@
-// Initialize Particles Only for Dashboard
+// ----------------------------
+// Particles.js Initialization
+// ----------------------------
 particlesJS("particles-js", {
   particles: {
     number: { value: 100 },
-    color: { value: "#FFF" }, // Cyan-like color for dashboard
+    color: { value: "#FFF" },
     shape: { type: "circle" },
-    opacity: { value: 0.3 }, // Lower opacity only for dashboard
+    opacity: { value: 0.3 },
     size: { value: 3 },
     line_linked: {
       enable: true,
@@ -28,7 +30,9 @@ particlesJS("particles-js", {
   retina_detect: true,
 });
 
+// ----------------------------
 // GSAP Animations
+// ----------------------------
 gsap.from(".logo", { duration: 1, y: -50, opacity: 0, ease: "bounce" });
 gsap.from(".header-center", { duration: 1, x: -50, opacity: 0, delay: 0.5 });
 gsap.from(".nav-links a", {
@@ -50,331 +54,272 @@ gsap.from(".about-us", { duration: 1, x: -100, opacity: 0, delay: 2 });
 gsap.from(".team-section", { duration: 1, x: 100, opacity: 0, delay: 2.5 });
 gsap.from("footer", { duration: 1, y: 50, opacity: 0, delay: 3 });
 
-/* Chatbot Integration JavaScript - Add this to your dashboard.js */
+// ----------------------------
+// Chatbot Integration
+// ----------------------------
+(function () {
+  "use strict";
 
-// Chatbot functionality
-(function() {
-    'use strict';
+  document.addEventListener("DOMContentLoaded", function () {
+    initializeChatbot();
+  });
 
-    // Wait for DOM to be fully loaded
-    document.addEventListener('DOMContentLoaded', function() {
-        initializeChatbot();
+  function initializeChatbot() {
+    const elements = {
+      modal: document.getElementById("chatbot-modal"),
+      overlay: document.getElementById("chatbot-overlay"),
+      closeBtn: document.getElementById("chatbot-close"),
+      searchBtn: document.getElementById("search-criminal-btn"),
+      firBtn: document.getElementById("file-fir-btn"),
+      criminalNameInput: document.getElementById("criminal-name"),
+      firDetailsTextarea: document.getElementById("fir-details"),
+      searchResult: document.getElementById("search-result"),
+      firResult: document.getElementById("fir-result"),
+      loadingIndicator: document.getElementById("loading-indicator"),
+    };
+
+    const missingElements = Object.entries(elements)
+      .filter(([key, element]) => !element)
+      .map(([key]) => key);
+
+    if (missingElements.length > 0) {
+      console.error("Chatbot: Missing DOM elements:", missingElements);
+      return;
+    }
+
+    setupEventListeners(elements);
+    setupCircleTrigger(elements);
+    console.log("Chatbot initialized successfully");
+  }
+
+  function setupEventListeners(elements) {
+    elements.closeBtn.addEventListener("click", () => closeModal(elements));
+    elements.overlay.addEventListener("click", () => closeModal(elements));
+
+    document.addEventListener("keydown", (event) => {
+      if (
+        event.key === "Escape" &&
+        !elements.modal.classList.contains("hidden")
+      ) {
+        closeModal(elements);
+      }
     });
 
-    function initializeChatbot() {
-        // Get DOM elements
-        const elements = {
-            toggleBtn: document.getElementById('chatbot-toggle'),
-            modal: document.getElementById('chatbot-modal'),
-            overlay: document.getElementById('chatbot-overlay'),
-            closeBtn: document.getElementById('chatbot-close'),
-            searchBtn: document.getElementById('search-criminal-btn'),
-            firBtn: document.getElementById('file-fir-btn'),
-            criminalNameInput: document.getElementById('criminal-name'),
-            firDetailsTextarea: document.getElementById('fir-details'),
-            searchResult: document.getElementById('search-result'),
-            firResult: document.getElementById('fir-result'),
-            loadingIndicator: document.getElementById('loading-indicator')
-        };
-
-        // Check if all required elements exist
-        const missingElements = Object.entries(elements)
-            .filter(([key, element]) => !element)
-            .map(([key]) => key);
-
-        if (missingElements.length > 0) {
-            console.error('Chatbot: Missing DOM elements:', missingElements);
-            return;
-        }
-
-        // Initialize event listeners
-        setupEventListeners(elements);
-        
-        console.log('Chatbot initialized successfully');
-    }
-
-    function setupEventListeners(elements) {
-        // Toggle modal visibility
-        elements.toggleBtn.addEventListener('click', function() {
-            openModal(elements);
-        });
-
-        // Close modal events
-        elements.closeBtn.addEventListener('click', function() {
-            closeModal(elements);
-        });
-
-        elements.overlay.addEventListener('click', function() {
-            closeModal(elements);
-        });
-
-        // Keyboard events
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape' && !elements.modal.classList.contains('hidden')) {
-                closeModal(elements);
-            }
-        });
-
-        // Search criminal functionality
-        elements.searchBtn.addEventListener('click', function() {
-            handleSearchCriminal(elements);
-        });
-
-        // Enter key support for criminal search
-        elements.criminalNameInput.addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                handleSearchCriminal(elements);
-            }
-        });
-
-        // File FIR functionality
-        elements.firBtn.addEventListener('click', function() {
-            handleFileFIR(elements);
-        });
-
-        // Ctrl+Enter support for FIR submission
-        elements.firDetailsTextarea.addEventListener('keydown', function(event) {
-            if (event.ctrlKey && event.key === 'Enter') {
-                handleFileFIR(elements);
-            }
-        });
-    }
-
-    function openModal(elements) {
-        elements.overlay.classList.remove('hidden');
-        elements.modal.classList.remove('hidden');
-        
-        // Add animation classes
-        setTimeout(() => {
-            elements.overlay.classList.add('show');
-            elements.modal.classList.add('show');
-        }, 10);
-
-        // Focus management for accessibility
-        elements.modal.focus();
-        
-        // Prevent body scroll
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeModal(elements) {
-        elements.overlay.classList.remove('show');
-        elements.modal.classList.remove('show');
-        
-        setTimeout(() => {
-            elements.overlay.classList.add('hidden');
-            elements.modal.classList.add('hidden');
-            document.body.style.overflow = '';
-        }, 300);
-
-        // Clear results when closing
-        clearResults(elements);
-    }
-
-    function clearResults(elements) {
-        elements.searchResult.classList.add('hidden');
-        elements.firResult.classList.add('hidden');
-        elements.searchResult.className = 'result-area hidden';
-        elements.firResult.className = 'result-area hidden';
-    }
-
-    function showLoading(elements, show = true) {
-        if (show) {
-            elements.loadingIndicator.classList.remove('hidden');
-        } else {
-            elements.loadingIndicator.classList.add('hidden');
-        }
-    }
-
-    function handleSearchCriminal(elements) {
-        const criminalName = elements.criminalNameInput.value.trim();
-        
-        if (!criminalName) {
-            showResult(elements.searchResult, 'Please enter a criminal name to search.', 'error');
-            return;
-        }
-
-        // Disable button and show loading
-        elements.searchBtn.disabled = true;
-        elements.searchBtn.textContent = 'Searching...';
-        showLoading(elements, true);
-
-        // Prepare request data
-        const requestData = {
-            name: criminalName
-        };
-
-        // Make API call to Flask backend
-        fetch('/search_criminal', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: JSON.stringify(requestData)
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.reply) {
-                showResult(elements.searchResult, data.reply, 'success');
-            } else {
-                showResult(elements.searchResult, 'No response received from server.', 'error');
-            }
-        })
-        .catch(error => {
-            console.error('Search criminal error:', error);
-            showResult(elements.searchResult, 
-                `Error searching criminal database: ${error.message}. Please try again.`, 
-                'error'
-            );
-        })
-        .finally(() => {
-            // Re-enable button and hide loading
-            elements.searchBtn.disabled = false;
-            elements.searchBtn.textContent = 'Search';
-            showLoading(elements, false);
-        });
-    }
-
-    function handleFileFIR(elements) {
-        const firDetails = elements.firDetailsTextarea.value.trim();
-        
-        if (!firDetails) {
-            showResult(elements.firResult, 'Please enter incident details to generate FIR.', 'error');
-            return;
-        }
-
-        if (firDetails.length < 20) {
-            showResult(elements.firResult, 'Please provide more detailed information (at least 20 characters).', 'error');
-            return;
-        }
-
-        // Disable button and show loading
-        elements.firBtn.disabled = true;
-        elements.firBtn.textContent = 'Generating FIR...';
-        showLoading(elements, true);
-
-        // Prepare request data
-        const requestData = {
-            details: firDetails
-        };
-
-        // Make API call to Flask backend
-        fetch('/write_fir', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: JSON.stringify(requestData)
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.reply) {
-                showResult(elements.firResult, data.reply, 'success');
-            } else {
-                showResult(elements.firResult, 'No response received from server.', 'error');
-            }
-        })
-        .catch(error => {
-            console.error('File FIR error:', error);
-            showResult(elements.firResult, 
-                `Error generating FIR: ${error.message}. Please try again.`, 
-                'error'
-            );
-        })
-        .finally(() => {
-            // Re-enable button and hide loading
-            elements.firBtn.disabled = false;
-            elements.firBtn.textContent = 'Generate FIR';
-            showLoading(elements, false);
-        });
-    }
-
-    function showResult(resultElement, message, type = 'success') {
-        resultElement.textContent = message;
-        resultElement.className = `result-area ${type}`;
-        resultElement.classList.remove('hidden');
-        
-        // Scroll result into view
-        resultElement.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'nearest' 
-        });
-    }
-
-    // Utility function to format criminal info (if needed)
-    function formatCriminalInfo(info) {
-        if (typeof info === 'string') {
-            return info;
-        }
-        
-        if (typeof info === 'object' && info !== null) {
-            return Object.entries(info)
-                .map(([key, value]) => `${key.charAt(0).toUpperCase() + key.slice(1)}: ${value}`)
-                .join('\n');
-        }
-        
-        return 'Invalid criminal information format.';
-    }
-
-    // Error handling for network issues
-    window.addEventListener('online', function() {
-        console.log('Chatbot: Network connection restored');
+    elements.searchBtn.addEventListener("click", () =>
+      handleSearchCriminal(elements)
+    );
+    elements.criminalNameInput.addEventListener("keypress", (event) => {
+      if (event.key === "Enter") handleSearchCriminal(elements);
     });
 
-    window.addEventListener('offline', function() {
-        console.log('Chatbot: Network connection lost');
+    elements.firBtn.addEventListener("click", () => handleFileFIR(elements));
+    elements.firDetailsTextarea.addEventListener("keydown", (event) => {
+      if (event.ctrlKey && event.key === "Enter") handleFileFIR(elements);
     });
+  }
 
-    // Export functions for testing (optional)
-    if (typeof module !== 'undefined' && module.exports) {
-        module.exports = {
-            initializeChatbot,
-            formatCriminalInfo
-        };
+  function setupCircleTrigger(elements) {
+    const circleContainer = document.querySelector(".circle-container");
+    if (circleContainer) {
+      circleContainer.addEventListener("click", () => openModal(elements));
+    }
+  }
+
+  function openModal(elements) {
+    elements.overlay.classList.remove("hidden");
+    elements.modal.classList.remove("hidden");
+    setTimeout(() => {
+      elements.overlay.classList.add("show");
+      elements.modal.classList.add("show");
+    }, 10);
+    document.body.style.overflow = "hidden";
+    elements.modal.focus();
+  }
+
+  function closeModal(elements) {
+    elements.overlay.classList.remove("show");
+    elements.modal.classList.remove("show");
+    setTimeout(() => {
+      elements.overlay.classList.add("hidden");
+      elements.modal.classList.add("hidden");
+      document.body.style.overflow = "";
+    }, 300);
+    clearResults(elements);
+  }
+
+  function clearResults(elements) {
+    elements.searchResult.className = "result-area hidden";
+    elements.firResult.className = "result-area hidden";
+  }
+
+  function showLoading(elements, show = true) {
+    if (show) elements.loadingIndicator.classList.remove("hidden");
+    else elements.loadingIndicator.classList.add("hidden");
+  }
+
+  function handleSearchCriminal(elements) {
+    const criminalName = elements.criminalNameInput.value.trim();
+    if (!criminalName) {
+      showResult(
+        elements.searchResult,
+        "Please enter a criminal name to search.",
+        "error"
+      );
+      return;
     }
 
+    elements.searchBtn.disabled = true;
+    elements.searchBtn.textContent = "Searching...";
+    showLoading(elements, true);
+
+    fetch("/search_criminal", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: criminalName }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        showResult(
+          elements.searchResult,
+          data.reply || "No response received.",
+          "success"
+        );
+      })
+      .catch((err) =>
+        showResult(elements.searchResult, `Error: ${err.message}`, "error")
+      )
+      .finally(() => {
+        elements.searchBtn.disabled = false;
+        elements.searchBtn.textContent = "Search";
+        showLoading(elements, false);
+      });
+  }
+
+  function handleFileFIR(elements) {
+    const firDetails = elements.firDetailsTextarea.value.trim();
+    if (!firDetails) {
+      showResult(
+        elements.firResult,
+        "Please enter incident details to generate FIR.",
+        "error"
+      );
+      return;
+    }
+    if (firDetails.length < 20) {
+      showResult(
+        elements.firResult,
+        "Provide more detailed information (at least 20 characters).",
+        "error"
+      );
+      return;
+    }
+
+    elements.firBtn.disabled = true;
+    elements.firBtn.textContent = "Generating FIR...";
+    showLoading(elements, true);
+
+    fetch("/write_fir", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ details: firDetails }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        showResult(
+          elements.firResult,
+          data.reply || "No response received.",
+          "success"
+        );
+      })
+      .catch((err) =>
+        showResult(elements.firResult, `Error: ${err.message}`, "error")
+      )
+      .finally(() => {
+        elements.firBtn.disabled = false;
+        elements.firBtn.textContent = "Generate FIR";
+        showLoading(elements, false);
+      });
+  }
+
+  function showResult(resultElement, message, type = "success") {
+    resultElement.textContent = message;
+    resultElement.className = `result-area ${type}`;
+    resultElement.classList.remove("hidden");
+    resultElement.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
 })();
 
-// Additional utility functions for dashboard integration
-function getChatbotStatus() {
-    const modal = document.getElementById('chatbot-modal');
-    return modal && !modal.classList.contains('hidden');
-}
+document.addEventListener("DOMContentLoaded", function () {
+  const toggleBtn = document.getElementById("chatbot-toggle");
+  const modal = document.getElementById("chatbot-modal");
+  const overlay = document.getElementById("chatbot-overlay");
+  const closeBtn = document.getElementById("chatbot-close");
 
-function closeChatbotModal() {
-    const closeBtn = document.getElementById('chatbot-close');
-    if (closeBtn) {
-        closeBtn.click();
-    }
-}
+  // Open modal
+  toggleBtn.addEventListener("click", () => {
+    modal.style.display = "flex";
+    overlay.style.display = "block";
+    document.body.style.overflow = "hidden";
+  });
 
-// Global error handler for chatbot-related errors
-window.addEventListener('error', function(event) {
-    if (event.filename && event.filename.includes('chatbot')) {
-        console.error('Chatbot error:', event.error);
-    }
+  // Close modal function
+  function closeModal() {
+    modal.style.display = "none";
+    overlay.style.display = "none";
+    document.body.style.overflow = "";
+  }
+
+  closeBtn.addEventListener("click", closeModal);
+  overlay.addEventListener("click", closeModal);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeModal();
+  });
+
+  // Criminal search AJAX
+const searchBtn = document.getElementById("search-criminal-btn");
+searchBtn.addEventListener("click", async () => {
+  const text = document.getElementById("criminal-name").value.trim();
+  const resultDiv = document.getElementById("search-result");
+
+  if (!text) {
+    resultDiv.textContent = "Please enter something to search.";
+    return;
+  }
+
+  resultDiv.classList.remove("hidden");
+  resultDiv.textContent = "Searching...";
+
+  try {
+    const response = await fetch("/search_criminal", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text }), // <-- send full prompt
+    });
+    const data = await response.json();
+    resultDiv.textContent = data.reply;
+  } catch (err) {
+    resultDiv.textContent = "Error fetching data.";
+  }
 });
 
-// Performance monitoring (optional)
-if ('performance' in window) {
-    window.addEventListener('load', function() {
-        setTimeout(function() {
-            const perfData = performance.getEntriesByType('navigation')[0];
-            if (perfData) {
-                console.log('Chatbot: Page load time:', perfData.loadEventEnd - perfData.loadEventStart, 'ms');
-            }
-        }, 0);
-    });
-}
+
+  // FIR generation AJAX
+  const firBtn = document.getElementById("file-fir-btn");
+  firBtn.addEventListener("click", async () => {
+    const details = document.getElementById("fir-details").value;
+    const resultDiv = document.getElementById("fir-result");
+    resultDiv.classList.remove("hidden");
+    resultDiv.textContent = "Generating FIR...";
+    try {
+      const response = await fetch("/write_fir", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ details }),
+      });
+      const data = await response.json();
+      resultDiv.innerHTML = `<pre>${data.reply}</pre><a href="${data.pdf_url}" target="_blank">Download PDF</a>`;
+    } catch (err) {
+      resultDiv.textContent = "Error generating FIR.";
+    }
+  });
+});
