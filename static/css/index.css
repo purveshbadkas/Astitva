@@ -39,13 +39,27 @@ body {
 }
 .title {
   margin: 0;
-  animation: flicker 2s infinite;
-  text-decoration: overline;
-  font-family: "UnifrakturCook", cursive;
-  font-size: 65px;
-  color: #00f0ff;
-  text-shadow: 0 0 15px #00f0ff, 0 0 30px #0ff;
+  font-family: "Special Elite", serif;
+  font-size: 80px; /* smaller than 100px for balance */
+  font-weight: 700;
+  color: #00f0ff; /* forensic red */
+  text-decoration: overline; /* underlines look more official */
+  text-shadow: 0 0 6px rgba(15, 223, 171, 0.6), 
+               0 0 12px rgba(5, 242, 246, 0.4);
+
+  animation: flicker 3s infinite;
 }
+
+/* Flicker animation */
+@keyframes flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+    opacity: 1;
+  }
+  20%, 24%, 55% {
+    opacity: 0.1;
+  }
+}
+
 
 .subtitle {
   margin-top: 4px;

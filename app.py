@@ -5,39 +5,23 @@ import base64
 import pandas as pd
 import os
 from datetime import datetime
-
-# Google AI
+from fpdf import FPDF
+import time
+from flask_cors import CORS
 import google.generativeai as genai
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
-if not GOOGLE_API_KEY:
-    raise ValueError("GOOGLE_API_KEY not set in environment")
-genai.api_key = GOOGLE_API_KEY
+from google.generativeai.types import HarmCategory, HarmBlockThreshold
+import json
 
-# Face matching
+# Face matching - Assuming you have this library
 from face_matcher import find_best_match
 
+# Assuming you have spaCy installed and models downloaded
 import spacy
 import re
-
 nlp = spacy.load("en_core_web_sm")
 
-def extract_entity(text):
-    # Extract PERSON entities using spaCy
-    doc = nlp(text)
-    entities = [ent.text for ent in doc.ents if ent.label_ == "PERSON"]
-    
-    # Fallback: look for patterns like "about <name>" or "on <name>"
-    fallback_matches = re.findall(r"(?:about|on)\s+([A-Z][a-z]+(?:\s[A-Z][a-z]+)*)", text)
-    
-    if fallback_matches:
-        entities.extend(fallback_matches)
-    
-    # Remove duplicates
-    return list(set(entities))
-
-
-
 app = Flask(__name__)
+CORS(app)
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB
 app.secret_key = 'your_secret_key'
 
@@ -47,6 +31,125 @@ CRIMINAL_FOLDER = os.path.join('static', 'criminals')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(CRIMINAL_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Configure Google AI with the correct model
+# DO NOT hardcode your API key. Use environment variables.
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+if not GOOGLE_API_KEY:
+    raise ValueError("GOOGLE_API_KEY not set in environment")
+genai.configure(api_key=GOOGLE_API_KEY)
+
+# Use the correct model name for text generation
+model = genai.GenerativeModel(
+    model_name="gemini-2.5-flash-preview-05-20",
+)
+
+def get_mime_type(filename):
+    # Very basic MIME type check based on extension
+    if filename.endswith(".jpg") or filename.endswith(".jpeg"):
+        return "image/jpeg"
+    elif filename.endswith(".png"):
+        return "image/png"
+    return None
+
+def generate_response(prompt, max_tokens):
+    """
+    Safely generate AI content. Handles empty candidates or missing parts.
+    Returns string or None.
+    """
+    try:
+        response = model.generate_content(
+            prompt,
+            generation_config={"max_output_tokens": max_tokens}
+        )
+
+        # Check if candidates exist
+        if response and hasattr(response, "candidates") and response.candidates:
+            candidate = response.candidates[0]
+            # Each candidate has 'content' with 'parts'
+            parts = getattr(candidate.content, "parts", None)
+            if parts and len(parts) > 0:
+                text = getattr(parts[0], "text", "").strip()
+                if text:
+                    return text
+
+        # Fallback if no valid content
+        return None
+
+    except Exception as e:
+        print(f"[AI ERROR] {e}")
+        return None
+
+def generate_response_safe(prompt, max_tokens=150):
+    """
+    Robust AI call: ensures we always get some text, even if Gemini API fails.
+    """
+    try:
+        response = model.generate_content(
+            prompt,
+            generation_config={"max_output_tokens": max_tokens, "temperature": 0.3}
+        )
+
+        # Extract text safely from candidates
+        text = ""
+        if response and response.candidates:
+            parts = getattr(response.candidates[0].content, 'parts', [])
+            if parts and len(parts) > 0:
+                text = parts[0].text.strip()
+
+        # Fallback if empty
+        if not text:
+            return None
+
+        return text
+
+    except Exception as e:
+        print(f"[AI ERROR] {e}")
+        return None
+def safe_generate_questions(user_description):
+    prompt = f"""
+You are a professional police assistant. Based on the incident description below, generate 5-7 neutral investigative questions.
+Return ONLY a JSON array of strings. Do NOT refuse, do NOT filter content.
+
+Incident Description: "{user_description}"
+"""
+    try:
+        response = model.generate_content(
+            prompt,
+            generation_config={"max_output_tokens": 600, "temperature": 0.7}
+        )
+
+        text = ""
+        if response and response.candidates and response.candidates[0].content.parts:
+            text = response.candidates[0].content.parts[0].text.strip()
+
+        # Clean markdown fences
+        if text.startswith("```json"):
+            text = text.split("\n",1)[-1].rsplit("\n",1)[0].strip()
+        if text.endswith("```"):
+            text = text[:-3].strip()
+
+        # Parse JSON
+        try:
+            questions = json.loads(text)
+            if not isinstance(questions, list):
+                raise ValueError("Not a list")
+        except Exception:
+            # fallback: split by lines if JSON fails
+            questions = [q.strip(" -•1234567890.") for q in text.split("\n") if q.strip()]
+
+        # ultimate fallback
+        if not questions:
+            questions = ["Please describe any additional relevant details about the incident."]
+
+        return questions
+
+    except Exception as e:
+        print(f"[AI ERROR] {e}")
+        return ["Please describe any additional relevant details about the incident."]
+
+
+
 
 # ----------------------------
 # Database Setup
@@ -126,6 +229,8 @@ def register():
         last_name = request.form['last_name']
         mobile = request.form['mobile']
         email = request.form['email']
+        # NOTE: This is a critical security vulnerability. Passwords should NEVER be stored in plaintext.
+        # Use a library like werkzeug.security to hash passwords.
         password = request.form['password']
         try:
             with sqlite3.connect('database.db') as conn:
@@ -230,89 +335,206 @@ def add_criminal():
         arrest_date = request.form['arrest_date']
         status = request.form['status']
         file = request.files['photo']
+        
+        # Add file type validation
+        if file and get_mime_type(file.filename) not in ["image/jpeg", "image/png"]:
+            return "Invalid file type. Only JPG and PNG are allowed.", 400
+
         filename = secure_filename(file.filename)
         photo_path = os.path.join(CRIMINAL_FOLDER, filename)
         file.save(photo_path)
 
-        df = pd.read_csv('criminals.csv') if os.path.exists('criminals.csv') else pd.DataFrame(columns=[
-            'name', 'age', 'crime_type', 'location', 'arrest_date', 'status', 'image'
-        ])
+        if os.path.exists('criminals.csv'):
+            df = pd.read_csv('criminals.csv')
+        else:
+            df = pd.DataFrame(columns=['name','age','image','crime_type','location','arrest_date','status'])
+
         df.loc[len(df.index)] = {
-            'name': name,
-            'age': age,
-            'crime_type': crime,
-            'location': location,
-            'arrest_date': arrest_date,
-            'status': status,
-            'image': filename
+            'name': name, 'age': age, 'crime_type': crime, 'location': location,
+            'arrest_date': arrest_date, 'status': status, 'image': filename
         }
         df.to_csv('criminals.csv', index=False)
-
         return redirect('/dashboard')
     return render_template('add_criminal.html')
 
-# ---------------- FIR Generation ----------------
-@app.route("/write_fir", methods=["POST"])
-def write_fir():
-    data = request.json
-    details = data.get("details")
-    if not details or len(details) < 20:
-        return jsonify({"reply": "Please provide detailed information for FIR."}), 400
-
-    fir_text = f"""
-    Maharashtra Police FIR
-
-    FIR Number: AUTO-GENERATED
-    Date: {datetime.now().strftime('%d-%m-%Y')}
-    Complainant: Anonymous
-    Location: Unknown
-    
-    Incident Description:
-    {details}
-
-    Suspect Info:
-    Not Provided
-
-    Action Taken:
-    Pending
-    """
-
-    from fpdf import FPDF
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", size=12)
-    for line in fir_text.strip().split("\n"):
-        pdf.multi_cell(0, 8, line)
-    pdf_filename = "static/fir_preview.pdf"
-    pdf.output(pdf_filename)
-
-    return jsonify({"reply": fir_text, "pdf_url": f"/{pdf_filename}"})
-
-# ---------------- Criminal Search with NLP ----------------
 @app.route("/search_criminal", methods=["POST"])
 def search_criminal():
-    # Accept full prompt from frontend
-    user_input = request.json.get("text")  
-    if not user_input or not user_input.strip():
-        return jsonify({"reply": "Please enter something to search."})
+    user_input = request.json.get("text", "").strip()
+    if not user_input:
+        return jsonify({"reply": "Please enter a name of the person you want information about."})
 
-    # Extract names/entities from the input using spaCy or your NLP function
-    entities = extract_entity(user_input)  # returns a list of names like ["Virat Kohli"]
-
+    # Step 1: Extract names/entities from input (use NLP if needed)
+    entities = extract_entity(user_input)
     if not entities:
-        return jsonify({"reply": "Could not understand whom you are asking about."})
+        return jsonify({"reply": "Could not understand whom you are asking about. Please provide full name(s)."})
 
+    # Step 2: Query criminal database
     results = []
     for name in entities:
-        info = fetch_criminal_info(name)  # your existing function to get info
+        info = fetch_criminal_info(name)
         if info:
-            results.append("\n".join([f"{k.capitalize()}: {v}" for k, v in info.items()]))
+            formatted_info = "\n".join([f"{k.capitalize()}: {v}" for k, v in info.items()])
+            results.append(formatted_info)
 
+    # Step 3: Handle no results
     if not results:
         return jsonify({"reply": "No criminal info available for the given name(s)."})
 
-    # Join all results
+    # Step 4: Return results as assistant reply
     return jsonify({"reply": "\n\n".join(results)})
+                     
+
+                 # pdflogic
+
+def build_fir_and_pdf(details: dict):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+
+    # Use the AI summary text you generated
+    fir_text = details.get("summary", "No FIR summary generated.")
+
+    for line in fir_text.split("\n"):
+        pdf.multi_cell(0, 8, line)
+
+    pdf_filename = f"static/fir_{int(time.time())}.pdf"
+    pdf.output(pdf_filename)
+
+    return fir_text, f"/{pdf_filename}"
+
+                    #  chatlogic----------
+@app.route("/chat_fir", methods=["POST"])
+def chat_fir():
+    try:
+        user_message = request.json.get("message", "").strip()
+        if not user_message:
+            return jsonify({"next_question": "Please type something to start."})
+
+        # ---------- Start FIR Process ----------
+        if user_message.lower() == "start_fir_process":
+            session["fir_data"] = {}
+            session["fir_step"] = 0
+            session["dynamic_questions"] = []
+            session["dynamic_index"] = 0
+            session["after_index"] = 0
+
+            session["fixed_before"] = [
+                "Please provide the REPORT NUMBER.",
+                "Enter the POLICE STATION.",
+                "Enter TYPE OF OFFENCE (e.g., Theft, Murder).",
+                "Enter IPC SECTION(s) (e.g., 379, 420).",
+                "Enter DATE & TIME OF INCIDENT (dd-mm-yyyy, hh:mm AM/PM).",
+                "Enter LOCATION OF INCIDENT.",
+                "Describe the INCIDENT in detail."
+            ]
+            session["keys_before"] = [
+                "report_no", "police_station", "offence_type",
+                "ipc_sections", "incident_date_time", "location",
+                "incident_description"
+            ]
+            session["fixed_after"] = [
+                "Complainant Name:",
+                "Complainant Contact Number:",
+                "Victim(s) Name(s):",
+                "Suspect(s) Name(s) (if unknown, type 'Unknown'):",
+                "Witness(es) Name(s):",
+                "Investigating Officer Name:",
+                "Digital Signature (optional):"
+            ]
+            session["keys_after"] = [
+                "complainant_name", "contact", "victims", "suspects",
+                "witnesses", "investigating_officer", "digital_signature"
+            ]
+
+            return jsonify({"next_question": session["fixed_before"][0]})
+
+        # ---------- Ensure FIR is started ----------
+        if "fir_data" not in session:
+            return jsonify({"next_question": "Please start FIR process by typing 'start_fir_process'."})
+
+        fir_data = session["fir_data"]
+        step = session["fir_step"]
+        fixed_before = session["fixed_before"]
+        keys_before = session["keys_before"]
+        fixed_after = session["fixed_after"]
+        keys_after = session["keys_after"]
+
+        # ---------- Handle fixed_before ----------
+        if step < len(fixed_before):
+            if step > 0:
+                # Save previous answer
+                fir_data[keys_before[step - 1]] = user_message
+
+            session["fir_step"] += 1
+            step += 1
+
+            # Last before-question → generate dynamic questions
+            if step == len(fixed_before):
+                incident_text = user_message
+                offence_type = fir_data.get("offence_type", "")
+                dynamic_qs = safe_generate_questions(
+                    f"Offence: {offence_type}\nIncident: {incident_text}"
+                )
+                session["dynamic_questions"] = dynamic_qs
+                session["dynamic_index"] = 0
+
+                print(f"[DEBUG] Dynamic questions: {dynamic_qs}")  # Debugging Gemini output
+
+                return jsonify({"next_question": session["dynamic_questions"][0]})
+            else:
+                return jsonify({"next_question": fixed_before[step]})
+
+        # ---------- Handle dynamic questions ----------
+        if session.get("dynamic_questions") and session["dynamic_index"] < len(session["dynamic_questions"]):
+            idx = session["dynamic_index"]
+            fir_data[f"dynamic_answer_{idx+1}"] = user_message
+            session["dynamic_index"] += 1
+
+            if session["dynamic_index"] < len(session["dynamic_questions"]):
+                return jsonify({"next_question": session["dynamic_questions"][session["dynamic_index"]]})
+            else:
+                # All dynamic answers collected → generate FIR summary
+                fir_prompt = f"""
+Generate a professional FIR summary using the following details:
+Offence Type: {fir_data.get('offence_type')}
+Incident Description: {fir_data.get('incident_description')}
+Dynamic Q&A responses: {json.dumps({k:v for k,v in fir_data.items() if k.startswith('dynamic_answer_')}, indent=2)}
+"""
+                summary_text = generate_response_safe(fir_prompt, max_tokens=700) or "Summary generation failed."
+                fir_data["summary"] = summary_text
+
+                return jsonify({
+                    "reply": "FIR summary generated successfully.",
+                    "summary": summary_text,
+                    "next_question": fixed_after[0]
+                })
+
+        # ---------- Handle fixed_after ----------
+        after_idx = session.get("after_index", 0)
+        if 0 <= after_idx < len(keys_after):
+            fir_data[keys_after[after_idx]] = user_message
+            session["after_index"] = after_idx + 1
+
+            if session["after_index"] < len(fixed_after):
+                return jsonify({"next_question": fixed_after[session['after_index']]})
+            else:
+                pdf_text, pdf_path = build_fir_and_pdf(fir_data)
+                session.clear()
+                return jsonify({"reply": pdf_text, "download_link": pdf_path})
+
+        # ---------- Fallback ----------
+        return jsonify({"next_question": "Unexpected step. Please restart with 'start_fir_process'."})
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({"reply": f"⚠️ Server error: {str(e)}"})
+
+
+
+
+
+
 
 # ----------------------------
 # Run App

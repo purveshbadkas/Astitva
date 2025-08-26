@@ -13,6 +13,7 @@
     <div class="header-center">Welcome {{ user }}</div>
   </header>
 
+  <!-- Circle Section for AI Assistant -->
   <section class="circle-section">
     <div id="chatbot-toggle" class="circle-container">
       <div class="rotating-circle"></div>
@@ -20,12 +21,13 @@
     </div>
   </section>
 
+  <!-- Cards Section -->
   <section class="cards-container">
     <!-- Upload Sketch -->
     <div class="card" onclick="document.getElementById('sketchInput').click();">
       <div class="card-inner">
         <div class="card-front">Upload Sketch</div>
-        <div class="card-back">Upload Sketch</div>
+        <div class="card-back">Upload Photo</div>
       </div>
     </div>
     <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data" style="display: none">
@@ -57,6 +59,7 @@
     </div>
   </section>
 
+  <!-- About Us -->
   <section class="about-us">
     <h2>About Us</h2>
     <p>
@@ -64,6 +67,7 @@
     </p>
   </section>
 
+  <!-- Team -->
   <section class="team-section">
     <h2>Our Team</h2>
     <div class="team">
@@ -73,46 +77,35 @@
     </div>
   </section>
 
+  <!-- Footer -->
   <footer>
     <a href="#"><img src="{{ url_for('static', filename='images/twitter.png') }}" alt="Twitter" class="social-icon" /></a>
     <a href="#"><img src="{{ url_for('static', filename='images/github.png') }}" alt="GitHub" class="social-icon" /></a>
     <a href="#"><img src="{{ url_for('static', filename='images/linkedin.png') }}" alt="LinkedIn" class="social-icon" /></a>
   </footer>
 
-  <!-- Chatbot Modal -->
-  <div id="chatbot-modal" class="chatbot-modal hidden" role="dialog" aria-modal="true">
-    <div class="chatbot-content">
-      <header class="chatbot-header">
-        <h2>ASTITVA Assistant</h2>
-        <button id="chatbot-close" class="chatbot-close">&times;</button>
-      </header>
-      <div class="chatbot-body">
-        <p class="chatbot-description">How can I assist you today?</p>
-        <div class="chatbot-section">
-          <h3>Search Criminal Database</h3>
-          <div class="input-group">
-            <input type="text" id="criminal-name" placeholder="Enter criminal name..." class="chatbot-input">
-            <button id="search-criminal-btn" class="chatbot-btn primary">Search</button>
-          </div>
-          <div id="search-result" class="result-area hidden"></div>
-        </div>
-        <div class="chatbot-section">
-          <h3>File FIR</h3>
-          <div class="input-group">
-            <textarea id="fir-details" placeholder="Enter incident details..." class="chatbot-textarea" rows="3"></textarea>
-            <button id="file-fir-btn" class="chatbot-btn secondary">Generate FIR</button>
-          </div>
-          <div id="fir-result" class="result-area hidden"></div>
-        </div>
-      </div>
-      <div id="loading-indicator" class="loading-indicator hidden">
-        <div class="spinner"></div>
-        <span>Processing...</span>
-      </div>
+<!-- Chatbot Modal -->
+<div id="chatbot-modal" class="chatbot-modal">
+  <div class="chatbot-header">
+    <span>ASTITVA AI</span>
+    <button id="chatbot-close">×</button>
+  </div>
+
+  <div id="chatbot-thread" class="chatbot-thread">
+    <div class="message assistant">
+      Hello! I’m Astitva 👋. How can I help you today?
     </div>
   </div>
 
-  <div id="chatbot-overlay" class="chatbot-overlay hidden"></div>
+  <div id="loading-indicator" class="loading hidden">Thinking...</div>
+
+  <form id="chat-form" class="chat-form">
+    <input type="text" id="chat-input" placeholder="Type your message..." autocomplete="off" />
+    <button type="submit">Send</button>
+  </form>
+</div>
+<div id="chatbot-overlay" class="chatbot-overlay"></div>
+
 
   <!-- JS -->
   <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
