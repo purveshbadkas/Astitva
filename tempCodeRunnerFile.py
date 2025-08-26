@@ -1,2 +1,1 @@
-
-            text = response.candidates[0].content.parts[0].text.strip()
+                summary_text = generate_response_safe(fir_prompt, max_tokens=700) or "Summary generation failed."

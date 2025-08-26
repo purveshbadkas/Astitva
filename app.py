@@ -81,31 +81,38 @@ def generate_response(prompt, max_tokens):
         return None
 
 def generate_response_safe(prompt, max_tokens=150):
-    """
-    Robust AI call: ensures we always get some text, even if Gemini API fails.
-    """
     try:
         response = model.generate_content(
             prompt,
             generation_config={"max_output_tokens": max_tokens, "temperature": 0.3}
         )
 
-        # Extract text safely from candidates
-        text = ""
-        if response and response.candidates:
-            parts = getattr(response.candidates[0].content, 'parts', [])
-            if parts and len(parts) > 0:
-                text = parts[0].text.strip()
+        # 🔍 Debug print to see structure
+        print("[DEBUG] Raw Gemini response:", response.to_dict())
 
-        # Fallback if empty
-        if not text:
+        if not response or not response.candidates:
+            print("[AI WARNING] No candidates returned.")
             return None
 
-        return text
+        # Collect text from all parts
+        texts = []
+        for cand in response.candidates:
+            if hasattr(cand, "content") and hasattr(cand.content, "parts"):
+                for part in cand.content.parts:
+                    if hasattr(part, "text") and part.text:
+                        texts.append(part.text.strip())
+
+        if not texts:
+            print("[AI WARNING] No text parts found in candidates.")
+            return None
+
+        return "\n".join(texts)
 
     except Exception as e:
         print(f"[AI ERROR] {e}")
         return None
+
+
 def safe_generate_questions(user_description):
     prompt = f"""
 You are a professional police assistant. Based on the incident description below, generate 5-7 neutral investigative questions.
@@ -386,23 +393,70 @@ def search_criminal():
 
                  # pdflogic
 
-def build_fir_and_pdf(details: dict):
+# ----------------------------
+# Improved PDF generator
+# ----------------------------
+def build_fir_and_pdf(fir_data: dict):
     pdf = FPDF()
     pdf.add_page()
-    pdf.set_font("Arial", size=12)
+    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.set_font("Arial", "", 12)
 
-    # Use the AI summary text you generated
-    fir_text = details.get("summary", "No FIR summary generated.")
+    # Current date & time for report
+    report_datetime = datetime.now().strftime("%d-%m-%Y %I:%M %p")
 
-    for line in fir_text.split("\n"):
-        pdf.multi_cell(0, 8, line)
+    # 1. HEADER
+    pdf.set_font("Arial", "B", 14)
+    pdf.cell(0, 8, "1. HEADER", ln=True)
+    pdf.set_font("Arial", "", 12)
+    pdf.cell(0, 8, f"REPORT NO: {fir_data.get('report_no','Not Provided')}", ln=True)
+    pdf.cell(0, 8, f"POLICE STATION: {fir_data.get('police_station','Not Provided')}", ln=True)
+    pdf.cell(0, 8, f"DATE & TIME OF REPORT: {report_datetime}", ln=True)
 
+    pdf.ln(4)
+
+    # 2. INCIDENT OVERVIEW
+    pdf.set_font("Arial", "B", 14)
+    pdf.cell(0, 8, "2. INCIDENT OVERVIEW", ln=True)
+    pdf.set_font("Arial", "", 12)
+    pdf.cell(0, 8, f"Type of Offence: {fir_data.get('offence_type','Not Provided')}", ln=True)
+    pdf.cell(0, 8, f"IPC Section(s): {fir_data.get('ipc_sections','Not Provided')}", ln=True)
+    pdf.cell(0, 8, f"Date of Incident: {fir_data.get('incident_date_time','Not Provided')}", ln=True)
+    pdf.cell(0, 8, f"Location of Incident: {fir_data.get('location','Not Provided')}", ln=True)
+    pdf.multi_cell(0, 8, f"Incident Detail: {fir_data.get('incident_description','Not Provided')}")
+    pdf.multi_cell(0, 8, f"Summary of Incident: {fir_data.get('summary','Summary generation failed.')}")
+
+    pdf.ln(4)
+
+    # 3. INVOLVED PARTIES
+    pdf.set_font("Arial", "B", 14)
+    pdf.cell(0, 8, "3. INVOLVED PARTIES", ln=True)
+    pdf.set_font("Arial", "", 12)
+    pdf.cell(0, 8, f"Complainant Name: {fir_data.get('complainant_name','Not Provided')}", ln=True)
+    pdf.cell(0, 8, f"Complainant Contact: {fir_data.get('contact','Not Provided')}", ln=True)
+    pdf.cell(0, 8, f"Victim(s): {fir_data.get('victims','Not Provided')}", ln=True)
+    pdf.cell(0, 8, f"Suspect(s): {fir_data.get('suspects','unknown')}", ln=True)
+    pdf.cell(0, 8, f"Witness(es): {fir_data.get('witnesses','NA')}", ln=True)
+
+    pdf.ln(4)
+
+    # 4. INVESTIGATING
+    pdf.set_font("Arial", "B", 14)
+    pdf.cell(0, 8, "4. INVESTIGATING", ln=True)
+    pdf.set_font("Arial", "", 12)
+    pdf.cell(0, 8, f"Investigating Officer: {fir_data.get('investigating_officer','Not Provided')}", ln=True)
+    pdf.cell(0, 8, f"Digital Signature: {fir_data.get('digital_signature','')}", ln=True)
+
+    # Output PDF file
     pdf_filename = f"static/fir_{int(time.time())}.pdf"
     pdf.output(pdf_filename)
 
-    return fir_text, f"/{pdf_filename}"
+    # Return only completion message and PDF path
+    return f"/{pdf_filename}"
 
-                    #  chatlogic----------
+# ----------------------------
+# Updated /chat_fir route
+# ----------------------------
 @app.route("/chat_fir", methods=["POST"])
 def chat_fir():
     try:
@@ -462,13 +516,11 @@ def chat_fir():
         # ---------- Handle fixed_before ----------
         if step < len(fixed_before):
             if step > 0:
-                # Save previous answer
                 fir_data[keys_before[step - 1]] = user_message
 
             session["fir_step"] += 1
             step += 1
 
-            # Last before-question → generate dynamic questions
             if step == len(fixed_before):
                 incident_text = user_message
                 offence_type = fir_data.get("offence_type", "")
@@ -477,9 +529,6 @@ def chat_fir():
                 )
                 session["dynamic_questions"] = dynamic_qs
                 session["dynamic_index"] = 0
-
-                print(f"[DEBUG] Dynamic questions: {dynamic_qs}")  # Debugging Gemini output
-
                 return jsonify({"next_question": session["dynamic_questions"][0]})
             else:
                 return jsonify({"next_question": fixed_before[step]})
@@ -493,21 +542,23 @@ def chat_fir():
             if session["dynamic_index"] < len(session["dynamic_questions"]):
                 return jsonify({"next_question": session["dynamic_questions"][session["dynamic_index"]]})
             else:
-                # All dynamic answers collected → generate FIR summary
+                # Generate FIR summary for PDF
                 fir_prompt = f"""
-Generate a professional FIR summary using the following details:
+You are Astitva, a professional police investigator. 
+Based on the details provided below, generate a clear and concise FIR summary in 3-5 sentences. 
+Write it as if you are officially documenting the incident.
+
 Offence Type: {fir_data.get('offence_type')}
 Incident Description: {fir_data.get('incident_description')}
-Dynamic Q&A responses: {json.dumps({k:v for k,v in fir_data.items() if k.startswith('dynamic_answer_')}, indent=2)}
+Other collected information: {json.dumps({k:v for k,v in fir_data.items() if k.startswith('dynamic_answer_')}, indent=2)}
+
+Make sure to include the key facts, involved parties, and the sequence of events. 
+Do not add any extra commentary or warnings. Return plain text only.
 """
                 summary_text = generate_response_safe(fir_prompt, max_tokens=700) or "Summary generation failed."
                 fir_data["summary"] = summary_text
-
-                return jsonify({
-                    "reply": "FIR summary generated successfully.",
-                    "summary": summary_text,
-                    "next_question": fixed_after[0]
-                })
+                session["after_index"] = 0
+                return jsonify({"next_question": fixed_after[0]})
 
         # ---------- Handle fixed_after ----------
         after_idx = session.get("after_index", 0)
@@ -518,11 +569,14 @@ Dynamic Q&A responses: {json.dumps({k:v for k,v in fir_data.items() if k.startsw
             if session["after_index"] < len(fixed_after):
                 return jsonify({"next_question": fixed_after[session['after_index']]})
             else:
-                pdf_text, pdf_path = build_fir_and_pdf(fir_data)
+                # Build PDF and clear session
+                pdf_path = build_fir_and_pdf(fir_data)
                 session.clear()
-                return jsonify({"reply": pdf_text, "download_link": pdf_path})
+                return jsonify({
+                    "reply": "✅ FIR generation completed successfully.",
+                    "download_link": pdf_path
+                })
 
-        # ---------- Fallback ----------
         return jsonify({"next_question": "Unexpected step. Please restart with 'start_fir_process'."})
 
     except Exception as e:
@@ -536,9 +590,12 @@ Dynamic Q&A responses: {json.dumps({k:v for k,v in fir_data.items() if k.startsw
 
 
 
+
+
 # ----------------------------
 # Run App
 # ----------------------------
 if __name__ == '__main__':
     init_db()
     app.run(host='0.0.0.0', port=5001, debug=True)
+
