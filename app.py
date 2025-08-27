@@ -80,19 +80,19 @@ def generate_response(prompt, max_tokens):
         print(f"[AI ERROR] {e}")
         return None
 
-def generate_response_safe(prompt, max_tokens=150):
+def generate_response_safe(prompt, max_tokens=1000,temperature=0.6):
     try:
         response = model.generate_content(
             prompt,
-            generation_config={"max_output_tokens": max_tokens, "temperature": 0.3}
+            generation_config={"max_output_tokens": max_tokens, "temperature": temperature}
         )
 
         # 🔍 Debug print to see structure
-        print("[DEBUG] Raw Gemini response:", response.to_dict())
+        # print("[DEBUG] Raw Gemini response:", response.to_dict())
 
-        if not response or not response.candidates:
-            print("[AI WARNING] No candidates returned.")
-            return None
+        # if not response or not response.candidates:
+        #     print("[AI WARNING] No candidates returned.")
+        #     return None
 
         # Collect text from all parts
         texts = []
@@ -109,7 +109,7 @@ def generate_response_safe(prompt, max_tokens=150):
         return "\n".join(texts)
 
     except Exception as e:
-        print(f"[AI ERROR] {e}")
+        # print(f"[AI ERROR] {e}")
         return None
 
 
@@ -405,7 +405,7 @@ def build_fir_and_pdf(fir_data: dict):
     # Current date & time for report
     report_datetime = datetime.now().strftime("%d-%m-%Y %I:%M %p")
 
-    # 1. HEADER
+    # ----------- HEADER -----------
     pdf.set_font("Arial", "B", 14)
     pdf.cell(0, 8, "1. HEADER", ln=True)
     pdf.set_font("Arial", "", 12)
@@ -415,7 +415,7 @@ def build_fir_and_pdf(fir_data: dict):
 
     pdf.ln(4)
 
-    # 2. INCIDENT OVERVIEW
+    # ----------- INCIDENT OVERVIEW -----------
     pdf.set_font("Arial", "B", 14)
     pdf.cell(0, 8, "2. INCIDENT OVERVIEW", ln=True)
     pdf.set_font("Arial", "", 12)
@@ -428,7 +428,7 @@ def build_fir_and_pdf(fir_data: dict):
 
     pdf.ln(4)
 
-    # 3. INVOLVED PARTIES
+    # ----------- INVOLVED PARTIES -----------
     pdf.set_font("Arial", "B", 14)
     pdf.cell(0, 8, "3. INVOLVED PARTIES", ln=True)
     pdf.set_font("Arial", "", 12)
@@ -440,7 +440,7 @@ def build_fir_and_pdf(fir_data: dict):
 
     pdf.ln(4)
 
-    # 4. INVESTIGATING
+    # ----------- INVESTIGATING -----------
     pdf.set_font("Arial", "B", 14)
     pdf.cell(0, 8, "4. INVESTIGATING", ln=True)
     pdf.set_font("Arial", "", 12)
@@ -451,8 +451,9 @@ def build_fir_and_pdf(fir_data: dict):
     pdf_filename = f"static/fir_{int(time.time())}.pdf"
     pdf.output(pdf_filename)
 
-    # Return only completion message and PDF path
+    # Return PDF path
     return f"/{pdf_filename}"
+
 
 # ----------------------------
 # Updated /chat_fir route
@@ -515,14 +516,15 @@ def chat_fir():
 
         # ---------- Handle fixed_before ----------
         if step < len(fixed_before):
-            if step > 0:
-                fir_data[keys_before[step - 1]] = user_message
+            # Save current user input to the correct key
+            fir_data[keys_before[step]] = user_message
 
             session["fir_step"] += 1
             step += 1
 
             if step == len(fixed_before):
-                incident_text = user_message
+                # Generate dynamic questions using incident description
+                incident_text = fir_data.get("incident_description", "")
                 offence_type = fir_data.get("offence_type", "")
                 dynamic_qs = safe_generate_questions(
                     f"Offence: {offence_type}\nIncident: {incident_text}"
@@ -544,19 +546,15 @@ def chat_fir():
             else:
                 # Generate FIR summary for PDF
                 fir_prompt = f"""
-You are Astitva, a professional police investigator. 
-Based on the details provided below, generate a clear and concise FIR summary in 3-5 sentences. 
-Write it as if you are officially documenting the incident.
+You are Astitva, a professional police investigator. Generate a concise 8-10 sentence FIR summary using the following details.
+Offence Type: {fir_data.get('offence_type', 'Not provided')}
+Incident Description: {fir_data.get('incident_description', 'Not provided')}
+Other collected information: {json.dumps({k:v for k,v in fir_data.items() if k.startswith('dynamic_answer_')})}
 
-Offence Type: {fir_data.get('offence_type')}
-Incident Description: {fir_data.get('incident_description')}
-Other collected information: {json.dumps({k:v for k,v in fir_data.items() if k.startswith('dynamic_answer_')}, indent=2)}
-
-Make sure to include the key facts, involved parties, and the sequence of events. 
-Do not add any extra commentary or warnings. Return plain text only.
+Return only plain text, do not include markdown or JSON.
 """
-                summary_text = generate_response_safe(fir_prompt, max_tokens=700) or "Summary generation failed."
-                fir_data["summary"] = summary_text
+                summary_text = generate_response_safe(fir_prompt, max_tokens=1000, temperature=0.6)
+                fir_data["summary"] = summary_text or "Summary generation failed."
                 session["after_index"] = 0
                 return jsonify({"next_question": fixed_after[0]})
 
@@ -583,6 +581,7 @@ Do not add any extra commentary or warnings. Return plain text only.
         import traceback
         traceback.print_exc()
         return jsonify({"reply": f"⚠️ Server error: {str(e)}"})
+
 
 
 
