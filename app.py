@@ -407,7 +407,7 @@ def build_fir_and_pdf(fir_data: dict):
 
     # ----------- HEADER -----------
     pdf.set_font("Arial", "B", 14)
-    pdf.cell(0, 8, "1. HEADER", ln=True)
+    pdf.cell(0, 8, "HEADER", ln=True)
     pdf.set_font("Arial", "", 12)
     pdf.cell(0, 8, f"REPORT NO: {fir_data.get('report_no','Not Provided')}", ln=True)
     pdf.cell(0, 8, f"POLICE STATION: {fir_data.get('police_station','Not Provided')}", ln=True)
@@ -417,20 +417,21 @@ def build_fir_and_pdf(fir_data: dict):
 
     # ----------- INCIDENT OVERVIEW -----------
     pdf.set_font("Arial", "B", 14)
-    pdf.cell(0, 8, "2. INCIDENT OVERVIEW", ln=True)
+    pdf.cell(0, 8, "INCIDENT OVERVIEW", ln=True)
     pdf.set_font("Arial", "", 12)
     pdf.cell(0, 8, f"Type of Offence: {fir_data.get('offence_type','Not Provided')}", ln=True)
     pdf.cell(0, 8, f"IPC Section(s): {fir_data.get('ipc_sections','Not Provided')}", ln=True)
     pdf.cell(0, 8, f"Date of Incident: {fir_data.get('incident_date_time','Not Provided')}", ln=True)
     pdf.cell(0, 8, f"Location of Incident: {fir_data.get('location','Not Provided')}", ln=True)
     pdf.multi_cell(0, 8, f"Incident Detail: {fir_data.get('incident_description','Not Provided')}")
-    pdf.multi_cell(0, 8, f"Summary of Incident: {fir_data.get('summary','Summary generation failed.')}")
+    pdf.cell(0, 8, "Summary of Incident:", ln=True)
+    pdf.multi_cell(180, 8, f"    {fir_data.get('summary', 'Summary generation failed.')}", align='L')
 
     pdf.ln(4)
 
     # ----------- INVOLVED PARTIES -----------
     pdf.set_font("Arial", "B", 14)
-    pdf.cell(0, 8, "3. INVOLVED PARTIES", ln=True)
+    pdf.cell(0, 8, "INVOLVED PARTIES", ln=True)
     pdf.set_font("Arial", "", 12)
     pdf.cell(0, 8, f"Complainant Name: {fir_data.get('complainant_name','Not Provided')}", ln=True)
     pdf.cell(0, 8, f"Complainant Contact: {fir_data.get('contact','Not Provided')}", ln=True)
@@ -442,7 +443,7 @@ def build_fir_and_pdf(fir_data: dict):
 
     # ----------- INVESTIGATING -----------
     pdf.set_font("Arial", "B", 14)
-    pdf.cell(0, 8, "4. INVESTIGATING", ln=True)
+    pdf.cell(0, 8, "INVESTIGATING", ln=True)
     pdf.set_font("Arial", "", 12)
     pdf.cell(0, 8, f"Investigating Officer: {fir_data.get('investigating_officer','Not Provided')}", ln=True)
     pdf.cell(0, 8, f"Digital Signature: {fir_data.get('digital_signature','')}", ln=True)
