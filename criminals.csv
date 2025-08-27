@@ -2,7 +2,7 @@ name,age,image,crime_type,location,arrest_date,status
 Virat Kohli,22,criminal1.png,Leadercrime,Bengaluru,2021-08-12,Wanted
 Rohit Sharma,50,criminal2.png,Captaincrime,Mumbai,2020-03-10,Arrested
 Jasprit Bumrah,28,criminal3.png,weaponcrime,Punjab,2022-01-15,Wanted
-Ps,21,Profile Pic.png,crime,Amt,2022-01-15,Wanted
+Prathamesh Sangole,21,Profile Pic.png,crime,Amt,2022-01-15,Wanted
 Yash Sharma,22,yashSharma.jpg,Murder,Pune,2024/08/24,Arrest
 Purvesh Badkas,21,PURVESH.jpg,theif,Amravati,30/11/2020,Jail Broken
 Yash Bhatkar,69,bhatkar.jpg,Rapist,Akola,2024/08/24,Arrest

@@ -364,31 +364,92 @@ def add_criminal():
         return redirect('/dashboard')
     return render_template('add_criminal.html')
 
+#----------------------------
+# AI-powered Name Extractor
+#----------------------------
+def extract_name_with_ai(user_input):
+    """
+    Uses Google Gemini to dynamically extract a person's name from a query.
+    Returns the extracted name as a string or None.
+    """
+    prompt = f"""
+    Extract ONLY the full name of a person from the following query. If no full name is found, return the word "None".
+
+    Query: "{user_input}"
+    """
+    try:
+        response = model.generate_content(
+            prompt,
+            generation_config={"max_output_tokens": 200},
+            safety_settings={
+                # Allow the model to generate content that might be related to sensitive topics.
+                HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
+                HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
+                HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE,
+                HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
+            },
+        )
+        
+        # Check if the response was blocked by safety filters
+        if not response or not response.candidates:
+            print("[AI WARNING] Blocked by safety settings. No text returned.")
+            return None
+
+        # Check for empty content
+        if not hasattr(response.candidates[0].content, 'parts') or not response.candidates[0].content.parts:
+            print("[AI WARNING] No parts in candidate content.")
+            return None
+
+        text = response.candidates[0].content.parts[0].text.strip()
+        
+        # Return the name if it's not "None"
+        if text.lower() != 'none':
+            # This is the key change: return the extracted text and let the main function standardize it
+            return text.strip().strip('"').strip("'")
+        return None
+
+    except Exception as e:
+        print(f"[AI ERROR] Name extraction failed: {e}")
+        return None
+
+
+#----------------------------
+# Updated /search_criminal route
+#----------------------------
 @app.route("/search_criminal", methods=["POST"])
 def search_criminal():
     user_input = request.json.get("text", "").strip()
     if not user_input:
         return jsonify({"reply": "Please enter a name of the person you want information about."})
 
-    # Step 1: Extract names/entities from input (use NLP if needed)
-    entities = extract_entity(user_input)
-    if not entities:
-        return jsonify({"reply": "Could not understand whom you are asking about. Please provide full name(s)."})
+    # Step 1: Use the AI model to dynamically extract the name
+    name_to_search = extract_name_with_ai(user_input)
+    
+    # Step 2: Fallback to spaCy if the AI model fails
+    if not name_to_search:
+        doc = nlp(user_input)
+        entities = [ent.text for ent in doc.ents if ent.label_ == "PERSON"]
+        if entities:
+            name_to_search = entities[0]
 
-    # Step 2: Query criminal database
-    results = []
-    for name in entities:
-        info = fetch_criminal_info(name)
-        if info:
-            formatted_info = "\n".join([f"{k.capitalize()}: {v}" for k, v in info.items()])
-            results.append(formatted_info)
+    # Step 3: Check if a name was found after both attempts
+    if not name_to_search:
+        return jsonify({"reply": "I couldn't identify a name in your request. Please provide a clearer name."})
+    
+    # NEW STEP: Convert the extracted name to title case
+    # This ensures that "virat kohli", "VIRAT KOHLI", etc., all become "Virat Kohli"
+    name_to_search_standardized = name_to_search.title()
 
-    # Step 3: Handle no results
-    if not results:
-        return jsonify({"reply": "No criminal info available for the given name(s)."})
+    # Step 4: Search the CSV file for the standardized name
+    info = fetch_criminal_info(name_to_search_standardized)
 
-    # Step 4: Return results as assistant reply
-    return jsonify({"reply": "\n\n".join(results)})
+    # Step 5: Handle the case where no information is found
+    if not info:
+        return jsonify({"reply": f"No criminal info available for {name_to_search_standardized}."})
+
+    # Step 6: Format and return the found information
+    formatted_info = "\n".join([f"{k.capitalize()}: {v}" for k, v in info.items()])
+    return jsonify({"reply": formatted_info})
                      
 
                  # pdflogic
