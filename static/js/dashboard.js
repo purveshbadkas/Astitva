@@ -61,7 +61,18 @@ const closeBtn = document.getElementById("chatbot-close");
 const chatThread = document.getElementById("chatbot-thread");
 const chatForm = document.getElementById("chat-form");
 const chatInput = document.getElementById("chat-input");
-const loadingIndicator = document.getElementById("loading-indicator");
+chatInput.addEventListener("input", () => {
+chatInput.style.height = "auto";
+chatInput.style.height = chatInput.scrollHeight + "px";
+chatInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault(); // stop newline
+    chatForm.dispatchEvent(new Event("submit")); // trigger form submit
+    chatInput.value = ""; // clear after send
+    chatInput.style.height = "auto"; // reset height
+  }
+});
+});const loadingIndicator = document.getElementById("loading-indicator");
 
 let chatMode = null;
 let processStarted = false;
@@ -77,11 +88,25 @@ function addMessage(sender, text) {
 function showOptionPrompt() {
   addMessage(
     "assistant",
-    `What do you want to do?<br>
+    `I can help you with the following. Pick an option <br>
       <button class="chat-option" data-mode="report">1️⃣ Generate a Crime Report</button><br>
       <button class="chat-option" data-mode="criminal">2️⃣ Get Criminal Info</button>`
   );
+
+  // Apply style after buttons are added
+  setTimeout(() => {
+    document.querySelectorAll(".chat-option").forEach((btn) => {
+      btn.style.backgroundColor = "#31dfefff"; // blue background
+      btn.style.color = "black"; // white text
+      btn.style.border = "none"; // no border
+      btn.style.padding = "10px 15px";
+      btn.style.margin = "5px 0";
+      btn.style.borderRadius = "8px"; // rounded corners
+      btn.style.cursor = "pointer";
+    });
+  }, 0);
 }
+
 
 function openChat() {
   modalEl.classList.add("active");
@@ -171,4 +196,5 @@ chatForm.addEventListener("submit", async function (e) {
     addMessage("assistant", "⚠️ Server error. Try again.");
   }
 });
+
 });

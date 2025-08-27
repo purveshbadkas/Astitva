@@ -482,7 +482,7 @@ def build_fir_and_pdf(fir_data: dict):
     pdf.set_font("Arial", "", 12)
     pdf.cell(0, 8, f"Type of Offence: {fir_data.get('offence_type','Not Provided')}", ln=True)
     pdf.cell(0, 8, f"IPC Section(s): {fir_data.get('ipc_sections','Not Provided')}", ln=True)
-    pdf.cell(0, 8, f"Date of Incident: {fir_data.get('incident_date_time','Not Provided')}", ln=True)
+    pdf.cell(0, 8, f"Date and Tiine of Incident: {fir_data.get('incident_date_time','Not Provided')}", ln=True)
     pdf.cell(0, 8, f"Location of Incident: {fir_data.get('location','Not Provided')}", ln=True)
     pdf.multi_cell(0, 8, f"Incident Detail: {fir_data.get('incident_description','Not Provided')}")
     pdf.cell(0, 8, "Summary of Incident:", ln=True)

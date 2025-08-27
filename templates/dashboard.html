@@ -87,22 +87,23 @@
 <!-- Chatbot Modal -->
 <div id="chatbot-modal" class="chatbot-modal">
   <div class="chatbot-header">
-    <span>ASTITVA AI</span>
+    <span>Astitva GenAi</span>
     <button id="chatbot-close">×</button>
   </div>
 
   <div id="chatbot-thread" class="chatbot-thread">
     <div class="message assistant">
-      Hello! I’m Astitva 👋. How can I help you today?
+      Hello! I’m Astitva 👋
     </div>
   </div>
 
   <div id="loading-indicator" class="loading hidden">Thinking...</div>
 
-  <form id="chat-form" class="chat-form">
-    <input type="text" id="chat-input" placeholder="Type your message..." autocomplete="off" />
-    <button type="submit">Send</button>
-  </form>
+<form id="chat-form" class="chat-form">
+  <textarea id="chat-input" placeholder="Type your message..." rows="1"></textarea>
+  <button type="submit">Send</button>
+</form>
+
 </div>
 <div id="chatbot-overlay" class="chatbot-overlay"></div>
 

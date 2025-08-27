@@ -25,7 +25,7 @@ body {
 .header-center {
   font-size: 1.5rem;
   font-weight: bold;
-  margin-left:110px ;
+  margin-left: 110px;
 }
 
 .nav-links a {
@@ -53,7 +53,7 @@ body {
   border: 7px dotted cyan;
   border-radius: 50%;
   animation: spin 10s linear infinite;
-  background-color:#000000CC;
+  background-color: #000000cc;
 }
 
 .circle-text {
@@ -121,7 +121,7 @@ body {
 
 .card-front,
 .card-back {
-  position: absolute;  
+  position: absolute;
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
@@ -263,7 +263,6 @@ body {
   border-radius: 10px; /* optional, makes it modern */
 }
 
-
 .team-member {
   border: 2px solid cyan;
   border-radius: 15px;
@@ -281,7 +280,6 @@ body {
   color: cyan;
   font-weight: bold;
 }
-
 
 footer {
   display: flex;
@@ -314,8 +312,6 @@ footer {
   display: none !important;
 }
 
-
-
 /* ===========================
    Chatbot Assistant Styles
    =========================== */
@@ -331,7 +327,7 @@ body.modal-open {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 420px;
+  width: 500px;
   max-width: 95%;
   height: 600px;
   display: none;
@@ -413,27 +409,56 @@ body.modal-open {
 /* Input row */
 .chat-form {
   display: flex;
+  align-items: center;
+  gap: 10px;
   border-top: 1px solid rgba(0, 255, 255, 0.3);
 }
 
-.chat-form input {
+#chat-input {
+  flex: 1; 
+  resize: none;
+  min-height: 40px;    /* starting height */
+  max-height: 150px;   /* optional limit */
+  overflow-y: auto;
+}
+#send-btn {
+  flex: 0 0 auto;      /* prevents growing */
+  height: 40px;        /* fixed button size */
+  padding: 0 16px;
+  border-radius: 6px;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+#send-btn:hover {
+  background: #0056b3;
+}
+
+
+.chat-form textarea {
   flex: 1;
   background: #111;
   border: 1px solid cyan;
-  border-radius: 0 0 0 12px;
+  border-radius: 8px;
   padding: 10px;
   color: cyan;
   outline: none;
+  resize: none;          /* prevent manual resize */
+  overflow-y: auto;
+  min-height: 40px;
+  max-height: 150px;     /* optional: stop it from getting too tall */
+  font-size: 14px;
 }
 
 .chat-form button {
-  padding: 10px 15px;
   background: cyan;
   border: none;
-  color: black;
-  font-weight: bold;
+  padding: 10px 16px;
+  border-radius: 8px;
   cursor: pointer;
-  border-radius: 0 0 12px 0;
+  color: #111;
+  font-weight: bold;
 }
 .chat-form button:hover {
   background: #00cccc;
@@ -449,4 +474,3 @@ body.modal-open {
 .hidden {
   display: none !important;
 }
-
