@@ -1,82 +1,112 @@
 body {
-    background-color: #000;
-    color: #00f0ff;
-    font-family: 'Orbitron', sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    margin: 0;
-  }
-  
-  .live-scan-container {
-    text-align: center;
-    padding: 20px;
-    border-radius: 12px;
-    background-color: rgba(0, 20, 40, 0.7);
-    box-shadow: 0 0 20px #00f0ff;
-  }
-  
-  /* Container to hold video and overlay aligned */
-  .video-wrapper {
-    position: relative;
-    width: 400px;
-    height: 300px;
-    margin: 0 auto;
-  }
-  
-  video {
-    width: 400px;
-    height: 300px;
-    border-radius: 12px;
-    box-shadow: 0 0 12px cyan;
-    object-fit: cover;
-  }
-  
-  /* Overlay and scan effect */
-  .scanner-overlay {
-    position: absolute;
+  background-color: #000;
+  color: #00f0ff;
+  font-family: 'Orbitron', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.live-scan-container {
+  text-align: center;
+  padding: 20px;
+  border-radius: 12px;
+  background-color: rgba(0, 20, 40, 0.7);
+  box-shadow: 0 0 20px #00f0ff;
+}
+
+/* Container for video + overlay */
+.video-wrapper {
+  position: relative;
+  width: 400px;
+  height: 300px;
+  margin: 0 auto;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 20px cyan;
+}
+
+video {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+/* Overlay with grid effect */
+.scanner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.7);
+  pointer-events: none;
+  overflow: hidden;
+
+  /* Grid lines */
+  background: repeating-linear-gradient(
+      rgba(0, 255, 234, 0.15) 0px,
+      rgba(0, 255, 234, 0.15) 2px,
+      transparent 3px,
+      transparent 6px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(0, 255, 234, 0.15) 0px,
+      rgba(0, 255, 234, 0.15) 2px,
+      transparent 3px,
+      transparent 6px
+    );
+}
+
+/* Animated scan line */
+.scan-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 255, 0, 0) 0%,
+    rgba(8, 215, 222, 0.8) 50%,
+    rgba(0, 255, 0, 0) 100%
+  );
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+  animation: scan-anim 2s linear infinite;
+}
+
+@keyframes scan-anim {
+  0% {
     top: 0;
-    left: 0;
-    width: 400px;
-    height: 300px;
-    border: 2px solid #4caf50;
-    box-shadow: 0 0 15px rgba(76, 175, 80, 0.7);
-    pointer-events: none;
   }
-  
-  .scan-line {
-    position: absolute;
-    width: 100%;
-    height: 4px;
-    background: rgba(0, 255, 0, 0.7);
-    animation: scan-anim 2s linear forwards;
+  100% {
+    top: 100%;
   }
-  
-  @keyframes scan-anim {
-    0% { top: 0; opacity: 0.6; }
-    50% { opacity: 1; }
-    100% { top: 100%; opacity: 0; }
-  }
-  
-  button {
-    margin: 10px;
-    padding: 10px 20px;
-    background: #00f0ff;
-    color: #000;
-    font-weight: bold;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #00d0d0;
-    box-shadow: 0 0 10px #00f0ff;
-  }
-  
-  #submitBtn {
-    display: none;
-  }
-  
+}
+
+/* Buttons */
+button {
+  margin: 10px;
+  padding: 10px 20px;
+  background: #00f0ff;
+  color: #000;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  background-color: #00d0d0;
+  box-shadow: 0 0 10px #00f0ff;
+}
+
+#submitBtn {
+  display: none;
+}

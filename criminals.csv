@@ -1,8 +1,157 @@
 name,age,image,crime_type,location,arrest_date,status
-ViratKohli,22,criminal1.png,Leadercrime,Bengaluru,2021-08-12,Wanted
-RohitSharma,50,criminal2.png,Captaincrime,Mumbai,2020-03-10,Arrested
-JaspritBumrah,28,criminal3.png,weaponcrime,Punjab,2022-01-15,Wanted
-Ps,21,Profile Pic.png,crime,Amt,2022-01-15,Wanted
-YashSharma,22,yashSharma.jpg,Murder,Pune,2024/08/24,Arrest
-bhatkar,69,bhatkar.jpg,Rapist,Akola,2024/08/24,Arrest
+Virat Kohli,22,criminal1.png,Leadercrime,Bengaluru,2021-08-12,Wanted
+Rohit Sharma,50,criminal2.png,Captaincrime,Mumbai,2020-03-10,Arrested
+Jasprit Bumrah,28,criminal3.png,weaponcrime,Punjab,2022-01-15,Wanted
+Prathamesh Sangole,21,Profile Pic.png,crime,Amt,2022-01-15,Wanted
+Yash Sharma,22,yashSharma.jpg,Murder,Pune,2024/08/24,Arrest
 Purvesh Badkas,21,PURVESH.jpg,theif,Amravati,30/11/2020,Jail Broken
+Yash Bhatkar,69,bhatkar.jpg,Rapist,Akola,2024/08/24,Arrest
+Anjali Mehta,28,f-005-01.jpg,Fraud,Mumbai,2021-11-02,Released
+Pooja Verma,25,f-006-01.jpg,Smuggling,Chennai,2019-05-23,Released
+Sanya Rao,29,f-007-01.jpg,Cybercrime,Hyderabad,2020-09-14,Released
+Isha Gupta,27,f-008-01.jpg,Theft,Jaipur,2021-06-18,Under Investigation
+Neha Nair,31,f-009-01.jpg,Fraud,Ahmedabad,2020-11-09,Released
+Priya Chawla,24,f-010-01.jpg,Burglary,Chandigarh,2021-01-30,Released
+Ritika Saxena,26,f-011-01.jpg,Drug Trafficking,Indore,2020-03-11,On Bail
+Divya Mishra,28,f-012-01.jpg,Assault,Nagpur,2018-06-17,Arrested
+Anika Singh,30,f-013-01.jpg,Smuggling,Coimbatore,2020-08-08,Released
+Shreya Kapoor,25,f-014-01.jpg,Cybercrime,Trivandrum,2021-07-29,Wanted
+Kriti Sharma,29,f-015-01.jpg,Theft,Guwahati,2020-10-20,On Bail
+Neelam Verma,27,f-016-01.jpg,Fraud,Ranchi,2021-05-13,Released
+Meera Joshi,24,f-017-01.jpg,Burglary,Amritsar,2020-06-30,Released
+Sneha Desai,26,f-018-01.jpg,Drug Trafficking,Mumbai,2019-08-15,Wanted
+Anushka Roy,28,f-019-01.jpg,Assault,Bengaluru,2020-12-17,On Bail
+Priyanka Singh,31,f-020-01.jpg,Smuggling,Kolkata,2019-09-23,Released
+Radhika Sharma,27,f-021-01.jpg,Cybercrime,Hyderabad,2021-04-09,Released
+Tanya Mehra,25,f-022-01.jpg,Theft,Surat,2019-11-07,Arrested
+Simran Kaur,29,f-023-01.jpg,Fraud,Ahmedabad,2018-08-28,Under Investigation
+Anita Bhatia,32,f-024-01.jpg,Theft,Delhi,2022-03-15,Arrested
+Pallavi Agarwal,28,f-025-01.jpg,Assault,Mumbai,2021-11-02,Released
+Sonia Kapoor,30,f-026-01.jpg,Burglary,Bengaluru,2020-07-19,Arrested
+Ritu Verma,27,f-027-01.jpg,Cybercrime,Chennai,2019-05-23,Released
+Kavita Rao,29,f-028-01.jpg,Drug Trafficking,Hyderabad,2020-09-14,On Bail
+Megha Nair,31,f-029-01.jpg,Fraud,Ahmedabad,2020-11-09,Released
+Shalini Chawla,24,f-030-01.jpg,Burglary,Chandigarh,2021-01-30,Released
+Divya Saxena,26,f-031-01.jpg,Assault,Indore,2020-03-11,On Bail
+Rhea Mishra,28,f-032-01.jpg,Smuggling,Nagpur,2018-06-17,Released
+Ananya Singh,30,f-033-01.jpg,Cybercrime,Coimbatore,2020-08-08,Wanted
+Suhana Kapoor,25,f-034-01.jpg,Drug Trafficking,Trivandrum,2021-07-29,Released
+Neha Sharma,29,f-035-01.jpg,Theft,Guwahati,2020-10-20,On Bail
+Rina Verma,27,f-036-01.jpg,Fraud,Ranchi,2021-05-13,Released
+Meera Joshi,24,f-037-01.jpg,Burglary,Amritsar,2020-06-30,Released
+Sneha Desai,26,f-038-01.jpg,Cybercrime,Mumbai,2019-08-15,Wanted
+Anushka Roy,28,f-039-01.jpg,Assault,Bengaluru,2020-12-17,On Bail
+Priyanka Singh,31,f-040-01.jpg,Smuggling,Kolkata,2019-09-23,Released
+Radhika Sharma,27,f-041-01.jpg,Theft,Hyderabad,2021-04-09,Released
+Tanya Mehra,25,f-042-01.jpg,Fraud,Surat,2019-11-07,Under Investigation
+Anjali Mehta,28,f1-001-01.jpg,Fraud,Mumbai,2021-11-02,Released
+Pooja Verma,25,f1-002-01.jpg,Smuggling,Chennai,2019-05-23,Released
+Sanya Rao,29,f1-003-01.jpg,Cybercrime,Hyderabad,2020-09-14,Released
+Isha Gupta,27,f1-004-01.jpg,Theft,Jaipur,2021-06-18,Under Investigation
+Neha Nair,31,f1-005-01.jpg,Fraud,Ahmedabad,2020-11-09,Released
+Priya Chawla,24,f1-006-01.jpg,Burglary,Chandigarh,2021-01-30,Released
+Ritika Saxena,26,f1-007-01.jpg,Drug Trafficking,Indore,2020-03-11,On Bail
+Divya Mishra,28,f1-008-01.jpg,Assault,Nagpur,2018-06-17,Arrested
+Anika Singh,30,f1-009-01.jpg,Smuggling,Coimbatore,2020-08-08,Released
+Shreya Kapoor,25,f1-010-01.jpg,Cybercrime,Trivandrum,2021-07-29,Wanted
+Kriti Sharma,29,f1-011-01.jpg,Theft,Guwahati,2020-10-20,On Bail
+Neelam Verma,27,f1-012-01.jpg,Fraud,Ranchi,2021-05-13,Released
+Meera Joshi,24,f1-013-01.jpg,Burglary,Amritsar,2020-06-30,Released
+Sneha Desai,26,f1-014-01.jpg,Drug Trafficking,Mumbai,2019-08-15,Wanted
+Anushka Roy,28,f1-015-01.jpg,Assault,Bengaluru,2020-12-17,On Bail
+Amit Sharma,32,m-008-01.jpg,Theft,Delhi,2021-03-15,Arrested
+Rohit Verma,28,m-009-01.jpg,Fraud,Mumbai,2020-11-02,Released
+Vikram Singh,40,m-010-01.jpg,Assault,Bengaluru,2019-07-19,On Bail
+Arjun Kapoor,35,m-011-01.jpg,Smuggling,Chennai,2018-05-23,Released
+Karan Patel,38,m-012-01.jpg,Burglary,Kolkata,2021-02-10,Arrested
+Siddharth Jain,29,m-013-01.jpg,Cybercrime,Hyderabad,2020-09-14,Wanted
+Rahul Deshmukh,33,m-014-01.jpg,Drug Trafficking,Pune,2018-12-05,Released
+Manish Yadav,36,m-015-01.jpg,Theft,Jaipur,2019-06-18,Arrested
+Aditya Nair,32,m-016-01.jpg,Assault,Lucknow,2020-08-27,Released
+Vivek Choudhary,41,m-017-01.jpg,Fraud,Ahmedabad,2019-11-09,On Bail
+Raghav Bansal,34,m-018-01.jpg,Smuggling,Bhopal,2018-10-12,Released
+Harsh Vardhan,38,m-019-01.jpg,Burglary,Chandigarh,2021-01-30,Arrested
+Amitabh Dubey,37,m-020-01.jpg,Cybercrime,Patna,2019-04-22,Wanted
+Tarun Khanna,33,m-021-01.jpg,Drug Trafficking,Indore,2020-03-11,Released
+Rakesh Bhatia,40,m-022-01.jpg,Theft,Surat,2021-09-05,On Bail
+Deepak Sharma,35,m-023-01.jpg,Assault,Ahmedabad,2018-07-19,Arrested
+Saurabh Jain,39,m-024-01.jpg,Fraud,Mumbai,2020-12-01,Released
+Rohit Kapoor,31,m-025-01.jpg,Smuggling,Bengaluru,2019-05-15,On Bail
+Vikram Verma,37,m-026-01.jpg,Burglary,Chennai,2018-06-30,Released
+Ankit Singh,28,m-027-01.jpg,Cybercrime,Kolkata,2021-02-28,Arrested
+Manoj Patel,36,m-028-01.jpg,Drug Trafficking,Hyderabad,2019-08-22,Wanted
+Kunal Sharma,33,m-029-01.jpg,Theft,Jaipur,2020-10-13,Released
+Ritesh Choudhary,40,m-030-01.jpg,Assault,Lucknow,2018-11-17,On Bail
+Harish Verma,38,m-031-01.jpg,Fraud,Patna,2019-03-05,Released
+Pranav Bansal,35,m-032-01.jpg,Smuggling,Indore,2020-07-29,Arrested
+Nikhil Jain,32,m-033-01.jpg,Burglary,Surat,2018-12-12,Released
+Raghav Kapoor,34,m-034-01.jpg,Cybercrime,Ahmedabad,2021-06-11,Wanted
+Abhishek Sharma,39,m-035-01.jpg,Drug Trafficking,Mumbai,2020-05-07,Released
+Vivek Verma,31,m-036-01.jpg,Theft,Bengaluru,2019-09-19,Arrested
+Aakash Singh,36,m-037-01.jpg,Assault,Chennai,2020-03-25,Released
+Rohit Bhatia,33,m-038-01.jpg,Fraud,Kolkata,2018-10-06,On Bail
+Siddharth Kapoor,40,m-039-01.jpg,Smuggling,Hyderabad,2019-07-14,Released
+Aditya Sharma,35,m-040-01.jpg,Burglary,Jaipur,2021-01-05,Arrested
+Manish Verma,38,m-041-01.jpg,Cybercrime,Lucknow,2020-08-30,Released
+Rakesh Jain,32,m-042-01.jpg,Drug Trafficking,Patna,2019-02-21,On Bail
+Vikram Bansal,37,m-043-01.jpg,Theft,Indore,2020-11-12,Released
+Amit Patel,34,m-044-01.jpg,Assault,Surat,2018-06-08,Arrested
+Harsh Sharma,39,m-045-01.jpg,Fraud,Ahmedabad,2019-10-29,Released
+Tarun Verma,36,m-046-01.jpg,Smuggling,Mumbai,2021-03-22,Wanted
+Rohan Kapoor,31,m-047-01.jpg,Burglary,Bengaluru,2020-09-17,Released
+Ankit Sharma,35,m-048-01.jpg,Cybercrime,Chennai,2019-05-03,Arrested
+Nikhil Verma,33,m-049-01.jpg,Drug Trafficking,Kolkata,2020-07-25,On Bail
+Vikram Sharma,38,m-050-01.jpg,Theft,Hyderabad,2018-12-30,Released
+Raghav Singh,36,m-051-01.jpg,Assault,Jaipur,2021-01-20,Arrested
+Deepak Kapoor,34,m-052-01.jpg,Fraud,Lucknow,2020-08-02,Released
+Aakash Bansal,37,m-053-01.jpg,Smuggling,Patna,2019-03-27,Wanted
+Manoj Sharma,32,m-054-01.jpg,Burglary,Indore,2020-11-18,Released
+Ritesh Verma,39,m-055-01.jpg,Cybercrime,Surat,2018-05-15,Arrested
+Harish Kapoor,35,m-056-01.jpg,Drug Trafficking,Ahmedabad,2019-12-09,Released
+Pranav Sharma,36,m-057-01.jpg,Theft,Mumbai,2020-04-04,On Bail
+Nikhil Patel,33,m-058-01.jpg,Assault,Bengaluru,2018-09-21,Released
+Abhishek Verma,40,m-059-01.jpg,Fraud,Chennai,2019-07-01,Arrested
+Vivek Bhatia,35,m-060-01.jpg,Smuggling,Kolkata,2021-03-10,Released
+Amit Singh,37,m-061-01.jpg,Burglary,Hyderabad,2020-06-12,On Bail
+Rohan Sharma,34,m-062-01.jpg,Cybercrime,Jaipur,2018-08-23,Released
+Tarun Bansal,38,m-063-01.jpg,Drug Trafficking,Lucknow,2019-01-17,Arrested
+Kunal Verma,36,m-064-01.jpg,Theft,Patna,2020-10-05,Released
+Manish Kapoor,32,m-065-01.jpg,Assault,Indore,2018-11-28,On Bail
+Rakesh Sharma,39,m-066-01.jpg,Fraud,Surat,2019-09-14,Released
+Vikram Patel,35,m-067-01.jpg,Smuggling,Ahmedabad,2020-12-19,Arrested
+Amit Bhatia,33,m-068-01.jpg,Burglary,Mumbai,2018-06-03,Released
+Harsh Verma,38,m-069-01.jpg,Cybercrime,Bengaluru,2019-10-22,On Bail
+Siddharth Sharma,36,m-070-01.jpg,Drug Trafficking,Chennai,2020-03-09,Released
+Aditya Kapoor,34,m-071-01.jpg,Theft,Kolkata,2018-09-27,Arrested
+Rohit Bansal,37,m-072-01.jpg,Assault,Hyderabad,2019-05-20,Released
+Manoj Verma,32,m-073-01.jpg,Fraud,Jaipur,2020-07-08,On Bail
+Karan Sharma,35,m-074-01.jpg,Smuggling,Lucknow,2018-12-11,Released
+Deepak Kapoor,39,m-075-01.jpg,Burglary,Patna,2019-03-30,Arrested
+Tarun Sharma,36,m-076-01.jpg,Cybercrime,Indore,2020-11-07,Released
+Vivek Verma,33,m-077-01.jpg,Drug Trafficking,Surat,2018-05-19,On Bail
+Rakesh Kapoor,38,m-078-01.jpg,Theft,Ahmedabad,2019-10-13,Released
+Amit Bansal,35,m-079-01.jpg,Assault,Mumbai,2020-04-18,Arrested
+Harsh Sharma,32,m-080-01.jpg,Fraud,Bengaluru,2018-09-04,Released
+Siddharth Verma,37,m-081-01.jpg,Smuggling,Chennai,2019-07-28,On Bail
+Aditya Bhatia,36,m-082-01.jpg,Burglary,Kolkata,2020-01-12,Released
+Rohan Kapoor,34,m-083-01.jpg,Cybercrime,Hyderabad,2018-08-09,Arrested
+Manish Sharma,38,m-084-01.jpg,Drug Trafficking,Jaipur,2019-02-25,Released
+Kunal Bansal,35,m-085-01.jpg,Theft,Lucknow,2020-10-23,On Bail
+Vikram Verma,33,m-086-01.jpg,Assault,Patna,2018-11-19,Released
+Rakesh Sharma,39,m-087-01.jpg,Fraud,Indore,2019-09-05,Arrested
+Amit Kapoor,36,m-088-01.jpg,Smuggling,Surat,2020-12-30,Released
+Harsh Verma,34,m-089-01.jpg,Burglary,Ahmedabad,2018-06-21,On Bail
+Siddharth Bhatia,37,m-090-01.jpg,Cybercrime,Mumbai,2019-10-07,Released
+Aditya Sharma,35,m-091-01.jpg,Drug Trafficking,Bengaluru,2020-03-26,Arrested
+Rohit Verma,33,m-092-01.jpg,Theft,Chennai,2018-09-12,Released
+Manoj Bansal,38,m-093-01.jpg,Assault,Kolkata,2019-07-05,On Bail
+Karan Sharma,36,m-094-01.jpg,Fraud,Hyderabad,2020-01-31,Released
+Deepak Verma,34,m-095-01.jpg,Smuggling,Jaipur,2018-08-15,Arrested
+Tarun Bhatia,37,m-096-01.jpg,Burglary,Lucknow,2019-02-20,Released
+Vivek Sharma,35,m-097-01.jpg,Cybercrime,Patna,2020-10-02,On Bail
+Rakesh Verma,33,m-098-01.jpg,Drug Trafficking,Indore,2018-11-06,Released
+Amit Sharma,38,m-099-01.jpg,Theft,Surat,2019-09-27,Arrested
+Harsh Bhatia,36,m-100-01.jpg,Assault,Ahmedabad,2020-12-14,Released
+Siddharth Verma,34,m-101-01.jpg,Fraud,Mumbai,2018-06-29,On Bail
+
+

@@ -11,28 +11,23 @@
   <header class="header">
     <div class="logo">ASTITVA</div>
     <div class="header-center">Welcome {{ user }}</div>
-    <!-- <nav class="nav-links">
-      <a href="#">Home</a>
-      <a href="#">About Us</a>
-      <a href="#">Contact Us</a>
-    </nav> -->
   </header>
 
-    <section class="circle-section">
-      <div class="circle-container">
-        <div class="rotating-circle"></div>
-        <div class="circle-text">ASTITVA</div>
-      </div>
-    </section>
+  <!-- Circle Section for AI Assistant -->
+  <section class="circle-section">
+    <div id="chatbot-toggle" class="circle-container">
+      <div class="rotating-circle"></div>
+      <div class="circle-text">ASTITVA</div>
+    </div>
+  </section>
 
-
-
+  <!-- Cards Section -->
   <section class="cards-container">
     <!-- Upload Sketch -->
     <div class="card" onclick="document.getElementById('sketchInput').click();">
       <div class="card-inner">
         <div class="card-front">Upload Sketch</div>
-        <div class="card-back">Upload Sketch</div>
+        <div class="card-back">Upload Photo</div>
       </div>
     </div>
     <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data" style="display: none">
@@ -64,6 +59,7 @@
     </div>
   </section>
 
+  <!-- About Us -->
   <section class="about-us">
     <h2>About Us</h2>
     <p>
@@ -71,6 +67,7 @@
     </p>
   </section>
 
+  <!-- Team -->
   <section class="team-section">
     <h2>Our Team</h2>
     <div class="team">
@@ -80,14 +77,40 @@
     </div>
   </section>
 
+  <!-- Footer -->
   <footer>
     <a href="#"><img src="{{ url_for('static', filename='images/twitter.png') }}" alt="Twitter" class="social-icon" /></a>
     <a href="#"><img src="{{ url_for('static', filename='images/github.png') }}" alt="GitHub" class="social-icon" /></a>
     <a href="#"><img src="{{ url_for('static', filename='images/linkedin.png') }}" alt="LinkedIn" class="social-icon" /></a>
   </footer>
 
-  <!-- Particles & JS -->
+<!-- Chatbot Modal -->
+<div id="chatbot-modal" class="chatbot-modal">
+  <div class="chatbot-header">
+    <span>Astitva GenAi</span>
+    <button id="chatbot-close">×</button>
+  </div>
+
+  <div id="chatbot-thread" class="chatbot-thread">
+    <div class="message assistant">
+      Hello! I’m Astitva 👋
+    </div>
+  </div>
+
+  <div id="loading-indicator" class="loading hidden">Thinking...</div>
+
+<form id="chat-form" class="chat-form">
+  <textarea id="chat-input" placeholder="Type your message..." rows="1"></textarea>
+  <button type="submit">Send</button>
+</form>
+
+</div>
+<div id="chatbot-overlay" class="chatbot-overlay"></div>
+
+
+  <!-- JS -->
   <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 </body>
 </html>

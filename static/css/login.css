@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron&family=UnifrakturCook:wght@700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Orbitron&family=UnifrakturCook:wght@700&display=swap");
 
 * {
   margin: 0;
@@ -6,11 +6,12 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   width: 100%;
   overflow: hidden;
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Special Elite", serif;
   background-color: #000 !important;
   color: #00f0ff;
   position: relative;
@@ -44,10 +45,11 @@ html, body {
 
 /* Title */
 .login-container h2 {
-  font-family: 'UnifrakturCook', cursive;
-  font-size: 48px;
+  font-family: "Special Elite", serif;
+  font-size: 40px;
   margin-bottom: 30px;
   color: #00f0ff;
+  text-decoration: overline 2px;
   text-shadow: 0 0 15px #00f0ff;
 }
 
@@ -96,7 +98,7 @@ html, body {
   text-decoration: underline;
   display: block;
   margin-top: 20px;
-  font-size: 16px;
+  font-size: 21px;
 }
 .login-container p a:hover {
   color: #00f0ff;
@@ -104,7 +106,7 @@ html, body {
 }
 .login-container p {
   margin-top: 30px;
-  font-size: 16px;
+  font-size: 18px;
   color: #7befff;
 }
 
@@ -238,4 +240,3 @@ html, body {
     font-size: 14px;
   }
 }
-
