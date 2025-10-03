@@ -38,11 +38,107 @@
   </div>
   {% endif %}
 
-  <div class="back-link">
-    <a href="/dashboard">⬅ Back to Dashboard</a>
-  </div>
+  <div class="action-links-container">
+    
+    {% if lens_available %}
+    <div class="advanced-search-link">
+        <a href="#" onclick="showAdvancedSearch(event)">🌐 Advanced Search</a>
+    </div>
+    {% endif %}
 
-  <!-- Particle.js -->
+    <div class="back-link">
+      <a href="/dashboard">⬅ Back to Dashboard</a>
+    </div>
+
+  </div>
+  
+  {% if lens_available %}
+  <div class="advanced-search-details hidden" id="advanced-search-details">
+    <h3>🌐 External Intelligence Report</h3>
+    <hr>
+    
+    {# Knowledge Graph Section #}
+    {% if knowledge_graph and knowledge_graph.title %}
+    <h4>🎯 Confirmed Identity (Knowledge Graph)</h4>
+    <div class="knowledge-card">
+        {% if knowledge_graph.thumbnail %}
+        <img src="{{ knowledge_graph.thumbnail }}" alt="KG Thumbnail" class="knowledge-thumbnail">
+        {% endif %}
+        <p><strong>{{ knowledge_graph.title }}</strong></p>
+        <p class="kg-snippet">{{ knowledge_graph.snippet }}</p>
+        {% if knowledge_graph.link %}
+        <a href="{{ knowledge_graph.link }}" target="_blank" class="kg-link">View Full Source: {{ knowledge_graph.source_title | default('Wikipedia') }}</a>
+        {% endif %}
+    </div>
+    <div style="clear: both;"></div> {# Clear float #}
+    <hr>
+    {% endif %}
+
+    {# Web Results Section #}
+    {% if web_results %}
+    <h4>📰 Related Articles & Web Results</h4>
+    <ul class="web-results-list">
+        {% for item in web_results[:5] %} {# Limit to top 5 results #}
+        <li>
+            <a href="{{ item.link }}" target="_blank"><strong>{{ item.title }}</strong></a>
+            <p class="web-snippet">{{ item.snippet | truncate(150, True) }}</p>
+            <small>{{ item.source_title | default(item.link.split('/')[2]) }}</small>
+        </li>
+        {% endfor %}
+    </ul>
+    <hr>
+    {% endif %}
+
+    {# Related Searches Section #}
+    {% if related_searches %}
+    <h4>🔍 Related Search Queries</h4>
+    <ul class="related-searches-list">
+        {% for item in related_searches %}
+        <li><a href="{{ item.link }}" target="_blank">{{ item.query }}</a></li>
+        {% endfor %}
+    </ul>
+    <hr>
+    {% endif %}
+
+    {# Visual Matches Section (Existing) #}
+    <h4>📸 Visually Similar Images Found</h4>
+    {% if lens_results %}
+    <div class="lens-results-grid">
+      {% for result in lens_results %}
+      <a href="{{ result.link }}" target="_blank" class="lens-result-item">
+        <img src="{{ result.thumbnail }}" alt="{{ result.title }}" />
+        <p>{{ result.title | truncate(30, True) }}</p>
+        <small>Source: {{ result.source | default('External Link') }}</small>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p>No external visual matches found.</p>
+    {% endif %}
+    
+    <div class="view-on-lens">
+      <a href="{{ lens_public_url }}" target="_blank">View Uploaded Image on Google Lens</a>
+    </div>
+  </div>
+  {% endif %}
+
+  <script>
+  function showAdvancedSearch(event) {
+      // 1. Prevent the default link action
+      event.preventDefault(); 
+      
+      const report = document.getElementById('advanced-search-details');
+      
+      if (report) {
+          // 2. Remove the 'hidden' class to make the content visible
+          report.classList.remove('hidden');
+          
+          // 3. Scroll the page down to the newly visible section smoothly
+          report.scrollIntoView({ behavior: 'smooth' });
+      }
+  }
+  </script>
+
   <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
   <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 </body>
